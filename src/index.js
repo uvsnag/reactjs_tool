@@ -6,6 +6,7 @@ import SqlProcess from './components/sqlProcess.jsx'
 import JsonProcess from './components/jsonProcess.jsx'
 import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
+import NotifyAuto from './components/notifyAuto.jsx'
 import reportWebVitals from './reportWebVitals';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";
 ReactDOM.render(
@@ -19,6 +20,7 @@ ReactDOM.render(
          <Route path="/json" element={<JsonProcess/>} />
          <Route path="/replace" element={<ReplaceProcess/>} />
          <Route path="/media" element={<MediaProcess/>} />
+         <Route path="/notify" element={<NotifyAuto/>} />
           
       </Routes>
     </BrowserRouter>

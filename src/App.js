@@ -9,6 +9,7 @@ function App() {
      <Link to="/json">json</Link>
      <Link to="/replace">replace</Link>
      <Link to="/media">media</Link>
+     <Link to="/notify">notify</Link>
     </div>
     </div>
   );
