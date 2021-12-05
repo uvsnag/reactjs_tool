@@ -70,7 +70,7 @@
 .prac{
     border: 3px solid #035c30;
     margin: 15px 15px 15px 15px;
-    padding: 15px 15px 15px 15px;
+    /* padding: 15px 15px 15px 15px; */
     text-align: center;
 }
 #btnHideWhenPrac{
@@ -122,6 +122,10 @@
         margin-left: 10px;
     }
     .prac{
-        width: 85%;
+        width: 95%;
+        margin-left: 5px;
+    }
+    .control-footer{
+        text-align: center;
     }
 }
