@@ -7,6 +7,9 @@
     overflow: hidden;
 }
 
+html {
+    width: 100vw;
+}
 #txtField {
     width: 100%;
     height: 400px;
@@ -18,10 +21,6 @@
     height: 1000px;
 }
 
-#txtField {
-    width: 100%;
-    height: 400px;
-}
 .dataInput textarea{
     width: 100%;
     height: 400px;
