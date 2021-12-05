@@ -183,17 +183,17 @@ const NotifyAuto = () => {
                         {/* <div>Field:</div> */}
                         <textarea className='ta3' id='txtField'></textarea>
                     </div>
-                    <div className='option-right'>
-                        <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} /><br />
-                        <input className='button-33' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} /><br />
-                        <input className='button-33' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} /><br />
+                    <div className='option-right notify-right'>
+                        <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
+                        <input className='button-33' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} />
+                        <input className='button-33' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} />
                         {/* <input className='button-33' type='submit' value="Hide" id='btnHide' onClick={() => onHideAll()} /><br /> */}
                         <select className='button-33' name="genData" id="slGenData" onChange={(e) => {
                             onChangeOrder(e.target.value)
                         }}>
                             <option value="order">order</option>
                             <option value="random">random</option>
-                        </select><br /><br />
+                        </select>
                         <input className='button-59' type="submit" id='isNotify' value={isNotify ? "is notifying" : 'not started yet'} /><br />
                     </div>
                 </div>

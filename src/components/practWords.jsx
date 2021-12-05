@@ -37,12 +37,14 @@ const PractWords = (props) => {
     };
     const onCheck = () => {
         var ans=document.getElementById('answer').value ;
-        if(ans.trim()===answer){
-            onChangeQuestion();
-            setErrorMs('correct!');
-            document.getElementById('answer').value='';
-        }else{
-            setErrorMs('wrong!');
+        if(!_.isNull(ans)&&!_.isNull(answer)){
+            if(ans.trim().toUpperCase()===answer.toUpperCase()){
+                onChangeQuestion();
+                setErrorMs('correct!');
+                document.getElementById('answer').value='';
+            }else{
+                setErrorMs('wrong!');
+            }
         }
     };
     const handleKeyDown = (e) => {
