@@ -39,9 +39,16 @@ const NotifyAuto = () => {
 
     const onLoad = (data, error) => {
         if (data) {
+            var arr =[];
             const result = data.items;
-            setItems(result);
-            console.log(result);
+            for(let i=0; i<result.length; i++){
+                if(!_.isEmpty(result[i].eng)){
+
+                    arr.push(result[i]);
+                }
+            }
+            setItems(arr);
+            console.log(arr);
         } else {
             console.log(error);
         }
