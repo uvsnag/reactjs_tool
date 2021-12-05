@@ -3,18 +3,18 @@
     border: 3px solid #000000;
 }
 
-.option ,.dataInput{
+.option ,.dataInput, .option-noti{
     overflow: hidden;
 }
 
 .option-right {
-    width: 47%;
+    width: 37%;
     float: right;
 }
 
 .option-left {
     float: left;
-    width: 47%;
+    width: 57%;
 }
 
 #txtField {
@@ -35,4 +35,70 @@
 .dataInput textarea{
     width: 100%;
     height: 400px;
+}
+.msg-eng-check{
+    color: rgb(9, 102, 37);
+}
+.control-footer{
+    padding: 15px 15px 15px 15px;
+}
+#btnPract{
+    margin-left: 10px;
+}
+@media (max-width: 1300px) and (min-width: 700px)  {
+    .option-noti {
+        width: 70%;
+    }
+    .option-right {
+        width: 40%;
+    }
+}
+@media (min-width: 1300px) {
+    .option-noti {
+        width: 50%;
+    }
+    .option-right {
+        width: 30%;
+    }
+}
+.ta3 {
+	border:2px dashed #D1C7AC;
+}
+.prac{
+    border: 3px solid #035c30;
+    margin: 15px 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
+    width: 400px;
+    text-align: center;
+}
+#answer {
+    font-size: 18px;
+    width: 200px;
+    height: 25px;
+    text-align: center;
+    background-color: transparent;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: 4px solid #035c30;
+}
+#answer:focus {
+    outline: none;
+  }
+
+.btn-prac{
+    background-color: rgb(252, 244, 210) !important;
+    box-shadow: rgba(173, 143, 9, .2) 0 -25px 18px -14px inset,rgba(173, 143, 9, 0.15) 0 1px 2px,rgba(173, 143, 9, 0.15) 0 2px 4px,rgba(173, 143, 9, 0.15) 0 4px 8px,rgba(173, 143, 9, 0.15) 0 8px 16px,rgba(173, 143, 9, 0.15) 0 16px 32px !important;
+    width: 100px !important;
+    margin-left: 20px;
+}
+.msg{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size:30px;
+    color: #1c771c;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+#btnHideWhenPrac{
+ width: 25px;
 }

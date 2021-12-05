@@ -8,11 +8,12 @@ import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
 import NotifyAuto from './components/notifyAuto.jsx'
 import reportWebVitals from './reportWebVitals';
+import { FaHome } from 'react-icons/fa';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";
 ReactDOM.render(
   <React.StrictMode>
      <BrowserRouter>
-    <div><Link to="/">Home</Link></div>
+    <div><Link to="/"><FaHome/></Link></div>
     <br/>
     <Routes>
         <Route exact path="/" element={<App/>} />

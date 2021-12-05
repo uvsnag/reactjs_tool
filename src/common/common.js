@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 export const randomDate=(start, end)=> {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -55,4 +56,13 @@ export const checkIncludesArr =(line, arrayStr, sensitive) => {
     }
 
     return false;
+}
+
+export const randomList =(arr) => {
+    if(!_.isEmpty(arr)){
+        var item = arr[Math.floor(Math.random()*arr.length)];
+        return item;
+    }
+
+    return "";
 }

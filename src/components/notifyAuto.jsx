@@ -1,17 +1,25 @@
-// this file is converted from javascript to reactjs so some code is not optimized
+// this is a tools for studying english
 import React, { useEffect, useState } from "react";
 import '../common/style.css';
+import '../common/styleTemplate.css';
 import _ from 'lodash';
 import { gapi } from 'gapi-script';
 import config from '../common/config.js';
 import { load, updateCell } from '../api/sheet.js';
+import PractWords from './practWords.jsx'
+import { randomList } from "../common/common.js";
+import { FaCircleNotch } from 'react-icons/fa';
 
 const NotifyAuto = () => {
     const [isNotify, setIsNotify] = useState(false);
     const [items, setItems] = useState([]);
+    const [oderRandomS, setOderRandomS] = useState('order');
 
     useEffect(() => {
-        document.getElementById('timeValue').value = '60000';
+        document.getElementById('timeValue').value = '60';
+        document.getElementById('pracWord').style.display = "none";
+        document.getElementById('control').style.display = "block";
+        document.getElementById('notify-control').style.display = "block";
         getDataFromExcel();
     }, []);
     const SPLIT_LINE_INPUT_FIELD = '\n';
@@ -53,7 +61,9 @@ const NotifyAuto = () => {
                 if (!_.isEmpty(item.customDefine)) {
                     meaning = item.customDefine;
                 }
-                arrList.push(item.eng + ' : ' + meaning);
+                if (!_.isEmpty(item.eng) && item.eng.length > 0) {
+                    arrList.push(item.eng + ' : ' + meaning);
+                }
             }
         }
         var strResult = '';
@@ -69,16 +79,22 @@ const NotifyAuto = () => {
 
     const onStart = async () => {
         if (functionIsRunning) {
-        return ;
+            return;
         }
         functionIsRunning = true;
         setIsNotify(true);
         var checkExcNotify = 'true';
         while (checkExcNotify === 'true') {
-            
+
             var lineInputs = getListLineField();
             for (var j = 0; j < lineInputs.length; j++) {
                 var line = lineInputs[j];
+                var oderRandom = document.getElementById("slGenData").value;
+
+                if (oderRandom === 'random') {
+                    line = randomList(lineInputs);
+                }
+
                 checkExcNotify = document.getElementById('isNotify').value;
                 if (checkExcNotify === 'false') {
                     return;
@@ -108,7 +124,7 @@ const NotifyAuto = () => {
                     }
                 }
                 var valueTime = document.getElementById('timeValue').value;
-                await new Promise(resolve => setTimeout(resolve, valueTime));
+                await new Promise(resolve => setTimeout(resolve, (valueTime * 1000)));
             }
 
         }
@@ -128,31 +144,75 @@ const NotifyAuto = () => {
         document.getElementById('control').style.display = "none";
     };
     const onShowAll = () => {
-        document.getElementById('control').style.display = "block";
+        var prac = document.getElementById('control');
+        if (prac.style.display === "block") {
+
+            document.getElementById('control').style.display = "none";
+        } else {
+            document.getElementById('control').style.display = "block";
+
+        }
     };
+    const onShowPract = () => {
+        var prac = document.getElementById('pracWord');
+        if (prac.style.display === "block") {
 
-    //
+            document.getElementById('pracWord').style.display = "none";
+        } else {
+            document.getElementById('pracWord').style.display = "block";
 
+        }
+        onHideWhenPrac();
+    };
+    const onChangeOrder = (value) => {
+        setOderRandomS(value);
+    }
+
+    const onHideWhenPrac = () => {
+        var prac = document.getElementById('notify-control');
+        if (prac.style.display === "block") {
+            document.getElementById('notify-control').style.display = "none";
+        } else {
+            document.getElementById('notify-control').style.display = "block";
+        }
+    };
     return (
         <div>
-            <div className='option block' id='control'>
-                <div className='option-left'>
-                    <div>Field:</div>
-                    <textarea id='txtField'></textarea>
+            <div id='notify-control'>
+                <div className='option-noti block' id='control'>
+                    <div className='option-left'>
+                        {/* <div>Field:</div> */}
+                        <textarea className='ta3' id='txtField'></textarea>
+                    </div>
+                    <div className='option-right'>
+                        <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} /><br />
+                        <input className='button-33' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} /><br />
+                        <input className='button-33' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} /><br />
+                        {/* <input className='button-33' type='submit' value="Hide" id='btnHide' onClick={() => onHideAll()} /><br /> */}
+                        <select className='button-33' name="genData" id="slGenData" onChange={(e) => {
+                            onChangeOrder(e.target.value)
+                        }}>
+                            <option value="order">order</option>
+                            <option value="random">random</option>
+                        </select><br /><br />
+                        <input className='button-59' type="submit" id='isNotify' value={isNotify ? "is notifying" : 'not started yet'} /><br />
+                    </div>
                 </div>
-                <div className='option-right'>
-                    <input type='submit' value="Start" id='btnStart' onClick={() => onStart()} /><br />
-                    <input type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} /><br />
-                    <input type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} /><br />
-                    <input type='submit' value="H" id='btnHide' onClick={() => onHideAll()} /><br />
-                    <input type="submit" id='isNotify' value={isNotify} /><br />
+                <div className='control-footer'>
+                    <button className='button-41' id='btnStop' onClick={() => onStop()} >Stop</button>
+                    <input className='button-23' type="text" id='timeValue' />
+                    <input className='button-33' type='submit' value="Show" id='btnShow' onClick={() => onShowAll()} />
+                    <input className='button-33' type='submit' value="Practice" id='btnPract' onClick={() => onShowPract()} />
                 </div>
             </div>
-            <input type='submit' value="Stop" id='btnStop' onClick={() => onStop()} />
-            <input type="text" id='timeValue' /><br />
-            <input type='submit' value="S" id='btnShow' onClick={() => onShowAll()} />
+            {/* <FaStop/> */}
+            <div id='pracWord'>
+                <PractWords items={items} oderRandom={oderRandomS} />
+            </div>
+            <div id='btnHideWhenPrac' onClick={() => onHideWhenPrac()} ><FaCircleNotch /></div>
         </div>
     );
+
 }
 
 export default NotifyAuto;
