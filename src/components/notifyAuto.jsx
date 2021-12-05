@@ -160,9 +160,8 @@ const NotifyAuto = () => {
             document.getElementById('pracWord').style.display = "none";
         } else {
             document.getElementById('pracWord').style.display = "block";
-
+            onHideWhenPrac();
         }
-        onHideWhenPrac();
     };
     const onChangeOrder = (value) => {
         setOderRandomS(value);

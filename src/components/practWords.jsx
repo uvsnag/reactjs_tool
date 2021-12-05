@@ -60,7 +60,7 @@ const PractWords = (props) => {
 
     return (
         <div className ='prac'>
-            <div>{question}</div>
+            <div>{question}</div><br/>
             <input type="text" id='answer' onKeyDown={e => handleKeyDown(e)}/><br />
             <div class='msg'>{errorMs==='wrong!'?<FaRegFrown/>:<FaRegSmile/>}</div>
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
