@@ -3,13 +3,16 @@ import React, { useEffect, useState } from "react";
 import '../common/style.css';
 import _ from 'lodash';
 import '../common/styleTemplate.css';
-import { FaRegFrown, FaRegSmile } from 'react-icons/fa';
+import { FaRegFrown, FaRegSmile, FaVolumeUp } from 'react-icons/fa';
+import { useSpeechSynthesis } from "react-speech-kit";
+
 const PractWords = (props) => {
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [errorMs, setErrorMs] = useState("");
     const [indexOrder, setIndexOrder] = useState(0);
     const [showAns, setShowAns] = useState('');
+    const [lastAnsw, setLastAnsw] = useState('');
 
     useEffect(() => {
         onChangeQuestion();
@@ -17,18 +20,27 @@ const PractWords = (props) => {
 
 
     const onChangeQuestion = () => {
-        if(!_.isEmpty(props.items)){
-            var item =null;
-            if(props.oderRandom ==='random'){
-                item = props.items[Math.floor(Math.random()*props.items.length)];
-            }else{
-                setIndexOrder(indexOrder+1);
-                item= props.items[indexOrder];
+        if (!_.isEmpty(props.items)) {
+            var item = null;
+            if (props.oderRandom === 'random') {
+                item = props.items[Math.floor(Math.random() * props.items.length)];
+            } else {
+                if (indexOrder >= props.items.length) {
+                    setIndexOrder(0);
+                    item = props.items[0];
+                } else {
+
+                    item = props.items[indexOrder];
+                    setIndexOrder(indexOrder + 1);
+                }
 
             }
-            if(_.isEmpty(item.customDefine)){
+            if (_.isEmpty(item)) {
+                return;
+            }
+            if (_.isEmpty(item.customDefine)) {
                 setQuestion(item.vi);
-            }else{
+            } else {
                 setQuestion(item.customDefine);
             }
             setAnswer(item.eng);
@@ -36,13 +48,14 @@ const PractWords = (props) => {
         }
     };
     const onCheck = () => {
-        var ans=document.getElementById('answer').value ;
-        if(!_.isNull(ans)&&!_.isNull(answer)){
-            if(ans.trim().toUpperCase()===answer.toUpperCase()){
+        var ans = document.getElementById('answer').value;
+        if (!_.isNull(ans) && !_.isNull(answer)) {
+            if (ans.trim().toUpperCase() === answer.toUpperCase()) {
                 onChangeQuestion();
                 setErrorMs('correct!');
-                document.getElementById('answer').value='';
-            }else{
+                document.getElementById('answer').value = "";
+                setLastAnsw(answer);
+            } else {
                 setErrorMs('wrong!');
             }
         }
@@ -53,21 +66,22 @@ const PractWords = (props) => {
         }
     }
     const onShow = () => {
-        if(_.isEmpty(showAns)){
+        if (_.isEmpty(showAns)) {
             setShowAns(answer);
-        }else{
+        } else {
             setShowAns("");
         }
     }
-
+    const { speak } = useSpeechSynthesis();
     return (
-        <div className ='prac'>
-            <div>{question}</div><br/>
-            <input type="text" id='answer' onKeyDown={e => handleKeyDown(e)}/><br />
-            <div class='msg'>{errorMs==='wrong!'?<FaRegFrown/>:<FaRegSmile/>}</div>
+        <div className='prac'>
+            <div>{question}</div><br />
+            <input type="text" id='answer' onKeyDown={e => handleKeyDown(e)} /><br />
+            <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />
-            <div>{showAns}</div>
+            <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speak({ text: showAns })} />}</div>
+            <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => speak({ text: lastAnsw })} /></div>} </div>
         </div>
     );
 }

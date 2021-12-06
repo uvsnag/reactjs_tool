@@ -69,7 +69,7 @@ html {
 .prac{
     border: 3px solid #035c30;
     margin: 15px 15px 15px 15px;
-    /* padding: 15px 15px 15px 15px; */
+    padding: 15px 15px 15px 15px; 
     text-align: center;
 }
 #btnHideWhenPrac{
@@ -77,6 +77,9 @@ html {
 }
 .button-33{
     margin-bottom: 10px;
+}
+.iconSound{
+    margin-left: 10px;
 }
 @media (min-width: 1400px) {
     .option-noti {
@@ -121,10 +124,17 @@ html {
         margin-left: 10px;
     }
     .prac{
-        width: 95%;
+        width: 93%;
         margin-left: 5px;
+        margin-right: 10px;
+        padding: 5px 5px 5px 5px; 
+        margin: 5px 5px 5px 5px; 
     }
     .control-footer{
         text-align: center;
+    }
+    .option-noti {
+     margin: 5px 5px 5px 5px; 
+     padding: 5px 5px 5px 5px; 
     }
 }
