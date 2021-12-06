@@ -73,6 +73,17 @@ const PractWords = (props) => {
         }
     }
     const { speak } = useSpeechSynthesis();
+
+    const speakText=(speakStr)=>{
+        var utterance = new window.SpeechSynthesisUtterance();
+        utterance.text = speakStr;
+        // utterance.lang = 'en-US';
+        utterance.rate =props.rate;
+        utterance.pitch =props.pitch;
+        utterance.voice =props.voice;
+        utterance.volume = 5;
+        speak(utterance);
+    }
     return (
         <div className='prac'>
             <div>{question}</div><br />
@@ -80,8 +91,8 @@ const PractWords = (props) => {
             <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />
-            <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speak({ text: showAns })} />}</div>
-            <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => speak({ text: lastAnsw })} /></div>} </div>
+            <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(showAns)} />}</div>
+            <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => speakText(lastAnsw)} /></div>} </div>
         </div>
     );
 }
