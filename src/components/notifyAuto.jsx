@@ -91,7 +91,7 @@ const NotifyAuto = () => {
         functionIsRunning = true;
         setIsNotify(true);
         var checkExcNotify = 'true';
-        while (checkExcNotify === 'true') {
+        while (checkExcNotify === 'true' || checkExcNotify ==='is notifying') {
 
             var lineInputs = getListLineField();
             for (var j = 0; j < lineInputs.length; j++) {
@@ -188,7 +188,7 @@ const NotifyAuto = () => {
                 <div className='option-noti block' id='control'>
                     <div className='option-left'>
                         {/* <div>Field:</div> */}
-                        <textarea className='ta3' id='txtField'></textarea>
+                        <textarea title='f' id='txtField'></textarea>
                     </div>
                     <div className='option-right notify-right'>
                         <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
