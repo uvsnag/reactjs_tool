@@ -1,12 +1,12 @@
 import config from '../common/config.js';
+import _ from 'lodash';
 
-
-export const load = (callback) => {
+export const load = (callback, sheet) => {
 window.gapi.client.load("sheets", "v4", () => {
   window.gapi.client.sheets.spreadsheets.values
     .get({
       spreadsheetId: config.spreadsheetId,
-      range: "Notify!A1:C100"
+      range: _.isEmpty(sheet)? config.sheet:sheet
     })
     .then(
       response => {

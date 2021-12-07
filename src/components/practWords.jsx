@@ -50,7 +50,8 @@ const PractWords = (props) => {
     const onCheck = () => {
         var ans = document.getElementById('answer').value;
         if (!_.isNull(ans) && !_.isNull(answer)) {
-            if (ans.trim().toUpperCase() === answer.toUpperCase()) {
+            var answ = answer.replaceAll('.', '');
+            if (ans.trim().toUpperCase() === answ.toUpperCase()) {
                 onChangeQuestion();
                 setErrorMs('correct!');
                 document.getElementById('answer').value = "";
@@ -78,9 +79,9 @@ const PractWords = (props) => {
         var utterance = new window.SpeechSynthesisUtterance();
         utterance.text = speakStr;
         // utterance.lang = 'en-US';
-        utterance.rate =props.rate;
-        utterance.pitch =props.pitch;
-        utterance.voice =props.voice;
+        utterance.rate = props.rate;
+        utterance.pitch = props.pitch;
+        utterance.voice = props.voice;
         utterance.volume = 5;
         speak(utterance);
     }

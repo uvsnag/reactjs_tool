@@ -4,5 +4,6 @@ export default {
     scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
     discoveryDocs: 
       ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-    spreadsheetId: "1w_LXJm2Vsw11IlhyuwaMJEWQLT36kgrJ3fJUQwA37fg"
+    spreadsheetId: "1w_LXJm2Vsw11IlhyuwaMJEWQLT36kgrJ3fJUQwA37fg",
+    sheet: "Notify!A1:C100"
     }

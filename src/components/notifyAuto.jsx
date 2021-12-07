@@ -19,12 +19,14 @@ const NotifyAuto = () => {
         onEnd,
     });
     const [isNotify, setIsNotify] = useState(false);
-    const [isUseVoice, setIsUseVoice] = useState(true);
+    // const [isUseVoice, setIsUseVoice] = useState(true);
     const [items, setItems] = useState([]);
     const [oderRandomS, setOderRandomS] = useState('order');
     const [voiceIndex, setVoiceIndex] = useState(1);
+    const [voiceIndexVie, setVoiceIndexVie] = useState(7);
     const [pitch, setPitch] = useState(1);
-    const [rate, setRate] = useState(1);
+    const [rate, setRate] = useState(0.8);
+    const [sheet, setSheet] = useState("");
     let voice = voices[voiceIndex] || null;
 
 
@@ -35,10 +37,16 @@ const NotifyAuto = () => {
         marginBottom: 12,
     };
     const SPLIT_WORD = ':';
-    const IND_SPEAK = 'speak';
+    const IND_SPEAK_NOTI_VOICE = 'noti-voice';
+    const IND_SPEAK_NO_VOICE = 'no-voice';
+    const IND_SPEAK_NO_NOTI = 'no-noti';
+    const IND_SPEAK_NOTI_NO_VIE = 'noti-no-vie';
+    const IND_SPEAK_NO_NOTI_NO_VIE = 'no-noti-no-vie';
+    const IND_SPEAK_NO_NOTI_ENG = 'noti-eng';
+    const IND_SPEAK_ALL_ENG = 'all-eng';
 
     useEffect(() => {
-        document.getElementById('timeValue').value = '60';
+        document.getElementById('timeValue').value = '30';
         document.getElementById('pracWord').style.display = "none";
         document.getElementById('control').style.display = "block";
         document.getElementById('notify-control').style.display = "block";
@@ -48,6 +56,8 @@ const NotifyAuto = () => {
     const SPLIT_LINE_INPUT_FIELD = '\n';
 
     const initClient = () => {
+        //custom sheet
+        var vsheet = sheet;
         gapi.client.init({
             // window.gapi.client.init({
             apiKey: config.apiKey,
@@ -56,7 +66,7 @@ const NotifyAuto = () => {
             scope: config.scope
         })
             .then(() => {
-                load(onLoad);
+                load(onLoad, vsheet);
             })
     };
 
@@ -110,10 +120,10 @@ const NotifyAuto = () => {
         document.getElementById('txtField').value = strResult;
     }
 
-    var isFirstTime=true;
+    var isFirstTime = true;
     const onStart = async () => {
-       var functionIsRunning = document.getElementById('isNotify').value;
-        if (functionIsRunning==='On') {
+        var functionIsRunning = document.getElementById('isNotify').value;
+        if (functionIsRunning === 'On') {
             return;
         }
         setIsNotify(true);
@@ -130,7 +140,7 @@ const NotifyAuto = () => {
                 }
 
                 checkExcNotify = document.getElementById('isNotify').value;
-                if (checkExcNotify === 'Off'&&!isFirstTime) {
+                if (checkExcNotify === 'Off' && !isFirstTime) {
                     return;
 
                 }
@@ -141,31 +151,55 @@ const NotifyAuto = () => {
                     if (Notification.permission === 'granted') {
                         // show notification here
                         var isSpeak = document.getElementById('slIsUseVoice').value;
-                        if(isSpeak===IND_SPEAK){
+                        if (!_.isEmpty(line)) {
 
-                            var speakStr = line.substring(0, line.indexOf(SPLIT_WORD));
-    
+
+                            var engStr = line.substring(0, line.indexOf(SPLIT_WORD));
+                            var viStr = line.substring(line.indexOf(SPLIT_WORD) + SPLIT_WORD.length, line.length);
+
                             var utterance = new window.SpeechSynthesisUtterance();
-                            utterance.text = speakStr;
-                            // utterance.lang = 'en-US';
-                            utterance.rate =rate;
-                            utterance.pitch =pitch;
-                            utterance.voice =voice;
-                            // utterance.rate =document.getElementsByClassName("rate-value").value;
-                            // utterance.pitch =document.getElementsByClassName("pitch-value").value;
-                            utterance.volume = 5;
 
-                            // speak({ text: speakStr });
-                            speak(utterance);
-                            // speak({ speakStr, voice, rate, raterate });
-                            // speak({ speakStr, voice, rate, pitch });
+                            //because state is not synchronized, can't use state in this line(in loop)
+                            var vVoice = document.getElementById('voice').value;
+                            var vVoiceVie = document.getElementById('voiceVie').value;
+                            var vrate = document.getElementById('rate').value;
+
+                            if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI)
+                                || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI_NO_VIE)
+                                ||_.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG)||_.isEqual(isSpeak, IND_SPEAK_ALL_ENG)) {
+
+                                utterance.text = engStr;
+                                // utterance.lang = 'en-US';
+                                utterance.rate = vrate;
+                                utterance.voice = voices[vVoice];
+                                utterance.volume = 5;
+                                //  setting pitch 
+                                // utterance.pitch =pitch;
+                                speak(utterance);
+                            }
+
+                            if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI)
+                            ||_.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG)) {
+                                utterance.text = viStr;
+                                // utterance.lang = 'vi-VN';
+                                utterance.rate = vrate;
+                                utterance.voice = voices[vVoiceVie];
+                                speak(utterance);
+                            }
+                            if(_.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG)||_.isEqual(isSpeak, IND_SPEAK_ALL_ENG)){
+                                var notification = new Notification(engStr);
+                            }
+
+                            if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_VOICE)
+                                || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE)) {
+                                var notification = new Notification(line);
+                            }
+
+                            // var notify = new Notification(valueTime, {
+                            //     body: line,
+                            //     icon: 'https://bit.ly/2DYqRrh',
+                            // });
                         }
-                        //    speak({ text, voice, rate, pitch });
-                        var notification = new Notification(line);
-                        // var notify = new Notification(valueTime, {
-                        //     body: line,
-                        //     icon: 'https://bit.ly/2DYqRrh',
-                        // });
                     } else {
                         // request permission from user
                         Notification.requestPermission().then(function (p) {
@@ -181,7 +215,7 @@ const NotifyAuto = () => {
                 }
                 var valueTime = document.getElementById('timeValue').value;
                 await new Promise(resolve => setTimeout(resolve, (valueTime * 1000)));
-                isFirstTime=false;
+                isFirstTime = false;
             }
 
         }
@@ -223,11 +257,11 @@ const NotifyAuto = () => {
         setOderRandomS(value);
     }
     const onChangeIsUseVoice = (value) => {
-        setIsUseVoice(value);
-        if (value === IND_SPEAK) {
-            document.getElementById('sound-control').style.display = "block";
-        } else {
+        // setIsUseVoice(value);
+        if (_.isEqual(value, IND_SPEAK_NO_VOICE)) {
             document.getElementById('sound-control').style.display = "none";
+        } else {
+            document.getElementById('sound-control').style.display = "block";
         }
     }
 
@@ -248,9 +282,14 @@ const NotifyAuto = () => {
                         <textarea title='f' id='txtField'></textarea>
                     </div>
                     <div className='option-right notify-right'>
-
-                        <input className='button-33' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} />
-                        <input className='button-33' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} />
+                    <select  name="sheet" id="slsheet" onChange={(e) => {
+                            setSheet(e.target.value)
+                        }}>
+                            <option value="Notify!A1:C100">Notify</option>
+                            <option value="Notify2!A1:C100">Notify2</option>
+                        </select>
+                        <input className='button-34' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} />
+                        <input className='button-34' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} />
                         {/* <input className='button-33' type='submit' value="Hide" id='btnHide' onClick={() => onHideAll()} /><br /> */}
 
                         <select className='button-33' name="genData" id="slGenData" onChange={(e) => {
@@ -262,11 +301,25 @@ const NotifyAuto = () => {
                         <select className='button-33' name="isUseVoice" id="slIsUseVoice" onChange={(e) => {
                             onChangeIsUseVoice(e.target.value)
                         }}>
-                            <option value={IND_SPEAK}>speak</option>
-                            <option value="none">none</option>
+                            <option value={IND_SPEAK_NO_NOTI_ENG}>Notify Eng - Voice</option>
+                            <option value={IND_SPEAK_NOTI_VOICE}>Notify - Voice</option>
+                            <option value={IND_SPEAK_NO_VOICE}>Notify</option>
+                            <option value={IND_SPEAK_NO_NOTI}>Voice</option>
+                            <option value={IND_SPEAK_ALL_ENG}>Notify Eng - Voice Eng</option>
+                            <option value={IND_SPEAK_NOTI_NO_VIE}>notify - Voice Eng</option>
+                            <option value={IND_SPEAK_NO_NOTI_NO_VIE}>Voice Eng</option>
                         </select>
-                        <div id='sound-control'>
 
+                        {/* <select className='button-33' name="genData" id="slGenData" onChange={(e) => {
+                            onChangeOrder(e.target.value)
+                        }}>
+                            <option value="noti-voice">Notify - Voice</option>
+                            <option value="noVoice">Notify - No voice</option>
+                            <option value="noNoti">No notify - Voice</option>
+                            <option value="noNotiNoVie">notify - Voice - No Vienamese</option>
+                        </select> */}
+                        <div id='sound-control'>
+                            <div>Voice 1:</div>
                             <select className='button-33'
                                 id="voice"
                                 name="voice"
@@ -284,14 +337,14 @@ const NotifyAuto = () => {
                             </select>
                             <div style={styleContainerRatePitch}>
                                 <div style={styleFlexRow}>
-                                    <label htmlFor="rate">Rate: </label>
+                                    <label htmlFor="rate">Speed: </label>
                                     <div className="rate-value">{rate}</div>
                                 </div>
                                 <input
                                     type="range"
                                     min="0.5"
                                     max="2"
-                                    defaultValue="1"
+                                    defaultValue="0.8"
                                     step="0.1"
                                     id="rate"
                                     onChange={(event) => {
@@ -299,7 +352,8 @@ const NotifyAuto = () => {
                                     }}
                                 />
                             </div>
-                            <div style={styleContainerRatePitch}>
+                            {/*  setting pitch */}
+                            {/* <div style={styleContainerRatePitch}>
                                 <div style={styleFlexRow}>
                                     <label htmlFor="pitch">Pitch: </label>
                                     <div className="pitch-value">{pitch}</div>
@@ -315,7 +369,23 @@ const NotifyAuto = () => {
                                         setPitch(event.target.value);
                                     }}
                                 />
-                            </div>
+                            </div> */}
+                            <div>Voice 2:</div>
+                            <select className='button-33'
+                                id="voiceVie"
+                                name="voiceVie"
+                                value={voiceIndexVie || ''}
+                                onChange={(event) => {
+                                    setVoiceIndexVie(event.target.value);
+                                }}
+                            >
+                                <option value="">Default</option>
+                                {voices.map((option, index) => (
+                                    <option key={option.voiceURI} value={index}>
+                                        {`${option.lang} - ${option.name}`}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
