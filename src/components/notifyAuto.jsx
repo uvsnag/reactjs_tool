@@ -172,7 +172,7 @@ const NotifyAuto = () => {
                                 // utterance.lang = 'en-US';
                                 utterance.rate = vrate;
                                 utterance.voice = voices[vVoice];
-                                utterance.volume = 5;
+                                utterance.volume = 10;
                                 //  setting pitch 
                                 // utterance.pitch =pitch;
                                 speak(utterance);

@@ -51,7 +51,7 @@ const PractWords = (props) => {
         var ans = document.getElementById('answer').value;
         if (!_.isNull(ans) && !_.isNull(answer)) {
             var answ = answer.replaceAll('.', '');
-            if (ans.trim().toUpperCase() === answ.toUpperCase()) {
+            if (ans.trim().toUpperCase() === answ.toUpperCase().trim()) {
                 onChangeQuestion();
                 setErrorMs('correct!');
                 document.getElementById('answer').value = "";
