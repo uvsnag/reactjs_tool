@@ -26,7 +26,7 @@ const PractWords = (props) => {
                 item = props.items[Math.floor(Math.random() * props.items.length)];
             } else {
                 if (indexOrder >= props.items.length) {
-                    setIndexOrder(0);
+                    setIndexOrder(1);
                     item = props.items[0];
                 } else {
 
