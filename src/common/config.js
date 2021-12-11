@@ -5,5 +5,5 @@ export default {
     discoveryDocs: 
       ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
     spreadsheetId: "1w_LXJm2Vsw11IlhyuwaMJEWQLT36kgrJ3fJUQwA37fg",
-    sheet: "Notify!A1:C100"
+    sheet: "Words1!A1:C100"
     }

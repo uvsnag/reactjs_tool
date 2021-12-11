@@ -25,7 +25,7 @@ const NotifyAuto = () => {
     const [voiceIndex, setVoiceIndex] = useState(1);
     const [voiceIndexVie, setVoiceIndexVie] = useState(7);
     const [pitch, setPitch] = useState(1);
-    const [rate, setRate] = useState(0.8);
+    const [rate, setRate] = useState(0.7);
     const [sheet, setSheet] = useState("");
     let voice = voices[voiceIndex] || null;
 
@@ -107,7 +107,11 @@ const NotifyAuto = () => {
                     meaning = item.customDefine;
                 }
                 if (!_.isEmpty(item.eng) && item.eng.length > 0) {
-                    arrList.push(item.eng + ' ' + SPLIT_WORD + ' ' + meaning);
+                    if(_.isEmpty(meaning)){
+                        arrList.push(item.eng);
+                    }else{
+                        arrList.push(item.eng + ' ' + SPLIT_WORD + ' ' + meaning);
+                    }
                 }
             }
         }
@@ -157,6 +161,10 @@ const NotifyAuto = () => {
                             var engStr = line.substring(0, line.indexOf(SPLIT_WORD));
                             var viStr = line.substring(line.indexOf(SPLIT_WORD) + SPLIT_WORD.length, line.length);
 
+                            if(_.isEmpty(engStr)){
+                                engStr = viStr;
+                                viStr ='';
+                            }
                             var utterance = new window.SpeechSynthesisUtterance();
 
                             //because state is not synchronized, can't use state in this line(in loop)
@@ -285,8 +293,10 @@ const NotifyAuto = () => {
                     <select  name="sheet" id="slsheet" onChange={(e) => {
                             setSheet(e.target.value)
                         }}>
-                            <option value="Notify!A1:C100">Notify</option>
-                            <option value="Notify2!A1:C100">Notify2</option>
+                            <option value="Words1!A1:C100">Words1</option>
+                            <option value="Words2!A1:C100">Words2</option>
+                            <option value="Sentence1!A1:C500">Sentence1</option>
+                            <option value="Sentence2!A1:C500">Sentence2</option>
                         </select>
                         <input className='button-34' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} />
                         <input className='button-34' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} />
@@ -344,7 +354,7 @@ const NotifyAuto = () => {
                                     type="range"
                                     min="0.5"
                                     max="2"
-                                    defaultValue="0.8"
+                                    defaultValue="0.7"
                                     step="0.1"
                                     id="rate"
                                     onChange={(event) => {
