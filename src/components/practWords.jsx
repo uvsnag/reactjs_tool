@@ -10,34 +10,45 @@ const PractWords = (props) => {
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [errorMs, setErrorMs] = useState("");
-    const [indexOrder, setIndexOrder] = useState(0);
     const [showAns, setShowAns] = useState('');
     const [lastAnsw, setLastAnsw] = useState('');
+    const [arrLineTemp, setArrLineTemp] = useState([]);
 
     useEffect(() => {
-        onChangeQuestion();
+        console.log("useEffect []");
     }, []);
+    useEffect(() => {
+
+        setArrLineTemp(_.cloneDeep(props.items));
+        console.log("useEffect [props.items]");
+    }, [props.items]);
+
+    useEffect(() => {
+        if (props.isLoadQuestion) {
+            onChangeQuestion();
+        }
+        console.log("useEffect [props.isLoadQuestion]");
+
+        // eslint-disable-next-line
+    }, [props.isLoadQuestion]);
 
 
     const onChangeQuestion = () => {
         if (!_.isEmpty(props.items)) {
-            var item = null;
+            let item = null;
+            let arrTemp = _.isEmpty(arrLineTemp) ? _.cloneDeep(props.items) : _.cloneDeep(arrLineTemp);
             if (props.oderRandom === 'random') {
-                item = props.items[Math.floor(Math.random() * props.items.length)];
+                let index = Math.floor(Math.random() * arrTemp.length);
+
+                item = arrTemp[index];
+                arrTemp.splice(index, 1);
+
             } else {
-                if (indexOrder >= props.items.length) {
-                    setIndexOrder(1);
-                    item = props.items[0];
-                } else {
-
-                    item = props.items[indexOrder];
-                    setIndexOrder(indexOrder + 1);
-                }
-
+                item = arrTemp[0];
+                arrTemp.shift();
             }
-            if (_.isEmpty(item)) {
-                return;
-            }
+            setArrLineTemp(arrTemp);
+
             if (_.isEmpty(item.customDefine)) {
                 setQuestion(item.vi);
             } else {
@@ -45,6 +56,8 @@ const PractWords = (props) => {
             }
             setAnswer(item.eng);
             setShowAns("");
+
+
         }
     };
     const onCheck = () => {
@@ -75,7 +88,7 @@ const PractWords = (props) => {
     }
     const { speak } = useSpeechSynthesis();
 
-    const speakText=(speakStr)=>{
+    const speakText = (speakStr) => {
         var utterance = new window.SpeechSynthesisUtterance();
         utterance.text = speakStr;
         // utterance.lang = 'en-US';

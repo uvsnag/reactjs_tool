@@ -76,6 +76,9 @@ html {
 .iconSound{
     margin-left: 10px;
 }
+.button-33, .button-34{
+    margin-top: 10px;
+}
 @media (min-width: 1400px) {
     .option-noti {
         width: 50%;
