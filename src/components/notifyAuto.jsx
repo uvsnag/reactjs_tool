@@ -27,7 +27,7 @@ const NotifyAuto = () => {
     const [voiceIndex, setVoiceIndex] = useState(1);
     const [voiceIndexVie, setVoiceIndexVie] = useState(7);
     const [pitch, setPitch] = useState(1);
-    const [rate, setRate] = useState(0.7);
+    const [rate, setRate] = useState(0.5);
     const [sheet, setSheet] = useState("");
     const [speakStr, setSpeakStr] = useState("");
 
@@ -397,9 +397,9 @@ const NotifyAuto = () => {
                                 </div>
                                 <input
                                     type="range"
-                                    min="0.5"
+                                    min="0.2"
                                     max="2"
-                                    defaultValue="0.7"
+                                    defaultValue="0.5"
                                     step="0.1"
                                     id="rate"
                                     onChange={(event) => {
