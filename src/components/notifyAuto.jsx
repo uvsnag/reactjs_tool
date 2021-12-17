@@ -9,6 +9,7 @@ import { load } from '../api/sheet.js';
 import PractWords from './practWords.jsx'
 import { FaCircleNotch } from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
+import { FaVolumeUp } from 'react-icons/fa';
 
 const NotifyAuto = () => {
     const onEnd = () => {
@@ -28,8 +29,7 @@ const NotifyAuto = () => {
     const [pitch, setPitch] = useState(1);
     const [rate, setRate] = useState(0.7);
     const [sheet, setSheet] = useState("");
-    let voice = voices[voiceIndex] || null;
-
+    const [speakStr, setSpeakStr] = useState("");
 
     const styleFlexRow = { display: 'flex', flexDirection: 'row' };
     const styleContainerRatePitch = {
@@ -81,7 +81,6 @@ const NotifyAuto = () => {
     const onGSheetApi = () => {
         var arrList = [];
         if (!_.isEmpty(items)) {
-            console.log(items.length);
             for (let i = 0; i < items.length; i++) {
                 var item = items[i];
                 var meaning = item.vi;
@@ -111,7 +110,6 @@ const NotifyAuto = () => {
         //custom sheet
         var vsheet = sheet;
         gapi.client.init({
-            // window.gapi.client.init({
             apiKey: config.apiKey,
             clientId: config.clientId,
             discoveryDocs: config.discoveryDocs,
@@ -127,9 +125,9 @@ const NotifyAuto = () => {
         if (data) {
             const result = data.items;
             let arr = [];
-        
+
             result.forEach(item => {
-                if(!_.isEmpty(item)&&!_.isEmpty(item.eng)){
+                if (!_.isEmpty(item) && !_.isEmpty(item.eng)) {
                     arr.push(item);
                 }
             });
@@ -140,7 +138,6 @@ const NotifyAuto = () => {
             console.log(error);
         }
     };
-
 
     /** */
 
@@ -159,14 +156,14 @@ const NotifyAuto = () => {
             let oderRandom = document.getElementById("slGenData").value;
 
             if (oderRandom === 'random') {
-                let index =Math.floor(Math.random()*lineInputs.length);
+                let index = Math.floor(Math.random() * lineInputs.length);
                 line = lineInputs[index];
                 lineInputs.splice(index, 1);
-            }else{
+            } else {
                 line = lineInputs[0];
                 lineInputs.shift();
             }
-            if(_.isEmpty(lineInputs)){
+            if (_.isEmpty(lineInputs)) {
                 lineInputs = getListLineField();
             }
 
@@ -190,43 +187,28 @@ const NotifyAuto = () => {
                 // show notification here
                 var isSpeak = document.getElementById('slIsUseVoice').value;
                 if (!_.isEmpty(line)) {
-                    console.log(line.indexOf(SPLIT_WORD));
-                    console.log(line.length);
                     var engStr = line.substring(0, line.indexOf(SPLIT_WORD));
                     var viStr = line.substring(line.indexOf(SPLIT_WORD) + SPLIT_WORD.length, line.length);
-
                     if (_.isEmpty(engStr)) {
                         engStr = viStr;
                         viStr = '';
+                    } else {
+                        setSpeakStr(engStr);
                     }
-                    var utterance = new window.SpeechSynthesisUtterance();
 
                     //because state is not synchronized, can't use state in this line(in loop)
-                    var vVoice = document.getElementById('voice').value;
-                    var vVoiceVie = document.getElementById('voiceVie').value;
-                    var vrate = document.getElementById('rate').value;
 
                     if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI)
                         || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI_NO_VIE)
                         || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG) || _.isEqual(isSpeak, IND_SPEAK_ALL_ENG)) {
 
-                        utterance.text = engStr;
-                        // utterance.lang = 'en-US';
-                        utterance.rate = vrate;
-                        utterance.voice = voices[vVoice];
-                        utterance.volume = 10;
-                        //  setting pitch 
-                        // utterance.pitch =pitch;
-                        speak(utterance);
+                        speakText(engStr, true);
                     }
 
                     if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI)
                         || _.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG)) {
-                        utterance.text = viStr;
-                        // utterance.lang = 'vi-VN';
-                        utterance.rate = vrate;
-                        utterance.voice = voices[vVoiceVie];
-                        speak(utterance);
+
+                        speakText(viStr, false);
                     }
                     if (_.isEqual(isSpeak, IND_SPEAK_NO_NOTI_ENG) || _.isEqual(isSpeak, IND_SPEAK_ALL_ENG)
                         || _.isEqual(isSpeak, IND_SPEAK_NOTI_ENG)) {
@@ -259,9 +241,9 @@ const NotifyAuto = () => {
         var txtField = document.getElementById('txtField').value.trim();
         var lineInputs = txtField.split(SPLIT_LINE_INPUT_FIELD);
         let arrResult = [];
-        
+
         lineInputs.forEach(item => {
-            if(!_.isEmpty(item)){
+            if (!_.isEmpty(item)) {
                 arrResult.push(item);
             }
         });
@@ -330,7 +312,26 @@ const NotifyAuto = () => {
         }
     };
 
+    const speakText = (speakStr, isEng) => {
 
+        var vVoice = document.getElementById('voice').value;
+        var vVoiceVie = document.getElementById('voiceVie').value;
+        var vrate = document.getElementById('rate').value;
+
+        var utterance = new window.SpeechSynthesisUtterance();
+
+        utterance.text = speakStr;
+        // utterance.lang = 'en-US';
+        utterance.rate = vrate;
+        // utterance.pitch = pitch;
+        if (isEng) {
+            utterance.voice = voices[vVoice];
+        } else {
+            utterance.voice = voices[vVoiceVie];
+        }
+        utterance.volume = 10;
+        speak(utterance);
+    }
     /** */
     return (
         <div>
@@ -444,6 +445,7 @@ const NotifyAuto = () => {
                     </div>
                 </div>
                 <div className='control-footer'>
+                    <div> {speakStr}{_.isEmpty(speakStr) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStr, true)} />}</div><br />
                     <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
                     <button className='button-41' id='btnStop' onClick={() => onStop()} >Stop</button>
                     <input className='button-23' type="text" id='timeValue' />
@@ -454,8 +456,9 @@ const NotifyAuto = () => {
             </div>
             {/* <FaStop/> */}
             <div id='pracWord'>
-                <PractWords items={items} oderRandom={oderRandomS} voice={voice} rate={rate} 
-                pitch={pitch} isLoadQuestion= {isLoadQuestion} />
+                <PractWords items={items} oderRandom={oderRandomS}
+                    speakText={speakText}
+                    isLoadQuestion={isLoadQuestion} />
             </div>
             <div id='btnHideWhenPrac' onClick={() => onHideWhenPrac()} ><FaCircleNotch /></div>
         </div>
