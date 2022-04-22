@@ -1,15 +1,16 @@
 // this is a tools for studying english
 import React, { useEffect, useState } from "react";
-import '../common/style.css';
-import '../common/styleTemplate.css';
+import '../../common/style.css';
+import '../../common/styleTemplate.css';
 import _ from 'lodash';
 import { gapi } from 'gapi-script';
-import config from '../common/config.js';
-import { load } from '../api/sheet.js';
+import config from '../../common/config.js';
+import { load } from './api/sheetDataRepository.js';
 import PractWords from './practWords.jsx'
 import { FaCircleNotch } from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
 import { FaVolumeUp } from 'react-icons/fa';
+import { useCookies } from 'react-cookie'
 
 const NotifyAuto = () => {
     const onEnd = () => {
@@ -27,9 +28,13 @@ const NotifyAuto = () => {
     const [voiceIndex, setVoiceIndex] = useState(1);
     const [voiceIndexVie, setVoiceIndexVie] = useState(7);
     const [pitch, setPitch] = useState(1);
-    const [rate, setRate] = useState(0.5);
+    const [rate, setRate] = useState(0.6);
     const [sheet, setSheet] = useState("");
-    const [speakStr, setSpeakStr] = useState("");
+    const [speakStrEng, setSpeakStrEng] = useState("");
+    const [speakStrVie, setSpeakStrVie] = useState("");
+    const [strContinue, setStrContinue] = useState("");
+    const [lineSheet, setLineSheet] = useState([]);
+    const [cookies, setCookie] = useCookies(['cookieContinue'])
 
     const styleFlexRow = { display: 'flex', flexDirection: 'row' };
     const styleContainerRatePitch = {
@@ -58,7 +63,10 @@ const NotifyAuto = () => {
         document.getElementById('control').style.display = "block";
         document.getElementById('notify-control').style.display = "block";
         getDataFromExcel();
-
+        // setLineSheet(getListLineField());
+        if(!_.isEmpty(cookies)){
+            setStrContinue(cookies.cookieContinue);
+        }
     }, []);
 
     useEffect(() => {
@@ -69,7 +77,18 @@ const NotifyAuto = () => {
     useEffect(() => {
         onGSheetApi();
         console.log("useEffect [items]");
+        setLineSheet(_.cloneDeep(items));
     }, [items]);
+    useEffect(() => {
+        console.log("useEffect [strContinue]");
+
+        let expires = new Date()
+        expires.setTime(expires.getTime() + (100 * 1000))
+       setCookie('cookieContinue',strContinue, { path: '/',  expires})
+
+    //    setStrContinue(cookies.cookieContinue); // To Get Cookie.
+    //    console.log(strContinue);
+    }, [strContinue]);
 
     /** */
     const getDataFromExcel = () => {
@@ -81,6 +100,15 @@ const NotifyAuto = () => {
     const onGSheetApi = () => {
         var arrList = [];
         if (!_.isEmpty(items)) {
+            var arrIndexNotNotify = _.isEmpty(strContinue)? []: strContinue.split(',').map(Number);
+            if (!_.isEmpty(arrIndexNotNotify) && arrIndexNotNotify.length > 0) {
+                arrIndexNotNotify.sort((a, b) => b - a);
+          
+                arrIndexNotNotify.forEach(inx => {
+                    setLineSheet(lineSheet.splice(inx, 1));
+                })
+              }
+            // setLineSheet(items);
             for (let i = 0; i < items.length; i++) {
                 var item = items[i];
                 var meaning = item.vi;
@@ -98,8 +126,10 @@ const NotifyAuto = () => {
         }
         var strResult = '';
         for (let j = 0; j < arrList.length; j++) {
-            strResult += arrList[j];
-            strResult += '\n';
+            if(!_.isEmpty(arrList[j])){
+                strResult += arrList[j];
+                strResult += '\n';
+            }
 
         }
         document.getElementById('txtField').value = strResult;
@@ -149,22 +179,30 @@ const NotifyAuto = () => {
 
         setIsNotify(true);
         var checkExcNotify = IND_VALUE_ON;
-        var lineInputs = getListLineField();
+        // var lineInputs = getListLineField();
         while (checkExcNotify === IND_VALUE_ON) {
             let line = "";
 
             let oderRandom = document.getElementById("slGenData").value;
 
             if (oderRandom === 'random') {
-                let index = Math.floor(Math.random() * lineInputs.length);
-                line = lineInputs[index];
-                lineInputs.splice(index, 1);
+                let index = Math.floor(Math.random() * lineSheet.length);
+                line = lineSheet[index];
+                lineSheet.splice(index, 1);
+                
             } else {
-                line = lineInputs[0];
-                lineInputs.shift();
+                line = lineSheet[0];
+                lineSheet.shift();
             }
-            if (_.isEmpty(lineInputs)) {
-                lineInputs = getListLineField();
+            // lineInputs = getListLineField();
+            let indexOrg = items.findIndex(x => x.eng === line.eng);
+            console.log(strContinue);
+            console.log(''+ strContinue + _.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString());
+            setStrContinue(''+ strContinue + _.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString());
+
+           
+            if (_.isEmpty(lineSheet)) {
+                setLineSheet(items);
             }
 
             onNotiExc(line);
@@ -178,7 +216,7 @@ const NotifyAuto = () => {
 
     /** */
     const onNotiExc = (line) => {
-
+        console.log(line);
         if (!window.Notification) {
             console.log('Browser does not support notifications.');
         } else {
@@ -187,14 +225,13 @@ const NotifyAuto = () => {
                 // show notification here
                 var isSpeak = document.getElementById('slIsUseVoice').value;
                 if (!_.isEmpty(line)) {
-                    var engStr = line.substring(0, line.indexOf(SPLIT_WORD));
-                    var viStr = line.substring(line.indexOf(SPLIT_WORD) + SPLIT_WORD.length, line.length);
-                    if (_.isEmpty(engStr)) {
-                        engStr = viStr;
-                        viStr = '';
-                    } else {
-                        setSpeakStr(engStr);
-                    }
+                    var engStr = line.eng;
+                    var viStr = line.vi;
+                    if (!_.isEmpty(line.customDefine)) {
+                        viStr = line.customDefine;
+                    } 
+                    setSpeakStrEng(engStr);
+                    setSpeakStrVie(viStr);
 
                     //because state is not synchronized, can't use state in this line(in loop)
 
@@ -237,18 +274,18 @@ const NotifyAuto = () => {
     }
 
     /** */
-    const getListLineField = () => {
-        var txtField = document.getElementById('txtField').value.trim();
-        var lineInputs = txtField.split(SPLIT_LINE_INPUT_FIELD);
-        let arrResult = [];
+    // const getListLineField = () => {
+    //     var txtField = document.getElementById('txtField').value.trim();
+    //     var lineInputs = txtField.split(SPLIT_LINE_INPUT_FIELD);
+    //     let arrResult = [];
 
-        lineInputs.forEach(item => {
-            if (!_.isEmpty(item)) {
-                arrResult.push(item);
-            }
-        });
-        return arrResult;
-    }
+    //     lineInputs.forEach(item => {
+    //         if (!_.isEmpty(item)) {
+    //             arrResult.push(item);
+    //         }
+    //     });
+    //     return arrResult;
+    // }
 
     /** */
     const onStop = () => {
@@ -399,7 +436,7 @@ const NotifyAuto = () => {
                                     type="range"
                                     min="0.2"
                                     max="2"
-                                    defaultValue="0.5"
+                                    defaultValue="0.6"
                                     step="0.1"
                                     id="rate"
                                     onChange={(event) => {
@@ -445,7 +482,7 @@ const NotifyAuto = () => {
                     </div>
                 </div>
                 <div className='control-footer'>
-                    <div> {speakStr}{_.isEmpty(speakStr) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStr, true)} />}</div><br />
+                    <div> {speakStrEng}:{speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div><br />
                     <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
                     <button className='button-41' id='btnStop' onClick={() => onStop()} >Stop</button>
                     <input className='button-23' type="text" id='timeValue' />
@@ -454,6 +491,7 @@ const NotifyAuto = () => {
                     <input className='button-59' type="submit" id='isNotify' value={isNotify ? IND_VALUE_ON : IND_VALUE_OFF} /><br />
                 </div>
             </div>
+            <textarea id="strContinue" value = {strContinue} ></textarea>
             {/* <FaStop/> */}
             <div id='pracWord'>
                 <PractWords items={items} oderRandom={oderRandomS}

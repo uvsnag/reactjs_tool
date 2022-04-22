@@ -6,7 +6,7 @@ import SqlProcess from './components/sqlProcess.jsx'
 import JsonProcess from './components/jsonProcess.jsx'
 import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
-import NotifyAuto from './components/notifyAuto.jsx'
+import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import reportWebVitals from './reportWebVitals';
 import { FaHome } from 'react-icons/fa';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";

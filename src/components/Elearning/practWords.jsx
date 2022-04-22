@@ -1,8 +1,8 @@
 // this is a tools for studying english
 import React, { useEffect, useState } from "react";
-import '../common/style.css';
+import '../../common/style.css';
 import _ from 'lodash';
-import '../common/styleTemplate.css';
+import '../../common/styleTemplate.css';
 import { FaRegFrown, FaRegSmile, FaVolumeUp } from 'react-icons/fa';
 
 const PractWords = (props) => {
