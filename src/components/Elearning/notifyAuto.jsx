@@ -19,22 +19,23 @@ const NotifyAuto = () => {
     const { speak, voices } = useSpeechSynthesis({
         onEnd,
     });
-    const [isNotify, setIsNotify] = useState(false);
-    // const [isUseVoice, setIsUseVoice] = useState(true);
     const [items, setItems] = useState([]);
-    const [oderRandomS, setOderRandomS] = useState('order');
+    const [oderRandomS, setOderRandomS] = useState('random');
     const [isLoadQuestion, setIsLoadQuestion] = useState(false);
 
     const [voiceIndex, setVoiceIndex] = useState(1);
     const [voiceIndexVie, setVoiceIndexVie] = useState(7);
-    const [pitch, setPitch] = useState(1);
     const [rate, setRate] = useState(0.6);
     const [sheet, setSheet] = useState("");
     const [speakStrEng, setSpeakStrEng] = useState("");
     const [speakStrVie, setSpeakStrVie] = useState("");
     const [strContinue, setStrContinue] = useState("");
     const [lineSheet, setLineSheet] = useState([]);
-    const [cookies, setCookie] = useCookies(['cookieContinue'])
+    const [cookies, setCookie] = useCookies(['cookieContinue']);
+
+    const [isStop, setIsStop] = useState(true);
+    const [intervalId, setIntervalId] = useState(-1);
+    const [countNotify, setCountNotify] = useState(0);
 
     const styleFlexRow = { display: 'flex', flexDirection: 'row' };
     const styleContainerRatePitch = {
@@ -54,11 +55,10 @@ const NotifyAuto = () => {
 
     const IND_VALUE_ON = 'On';
     const IND_VALUE_OFF = 'Off';
-    const SPLIT_LINE_INPUT_FIELD = '\n';
-
+   
     /**  */
     useEffect(() => {
-        document.getElementById('timeValue').value = '30';
+        document.getElementById('timeValue').value = '5';
         document.getElementById('pracWord').style.display = "none";
         document.getElementById('control').style.display = "block";
         document.getElementById('notify-control').style.display = "block";
@@ -70,24 +70,35 @@ const NotifyAuto = () => {
     }, []);
 
     useEffect(() => {
+        console.log("useEffect [countNotify]");
+        let valueTime = document.getElementById('timeValue').value;
+            if(!isStop){
+                setIntervalId(setTimeout(() => {
+                    execute();
+                setCountNotify(countNotify+1);
+            }, (valueTime * 1000)));
+        }
+        }, [countNotify]);
+
+    useEffect(() => {
         getDataFromExcel();
         console.log("useEffect [sheet]");
     }, [sheet]);
 
+
     useEffect(() => {
+        // setLineSheet(_.cloneDeep(items));
         onGSheetApi();
         console.log("useEffect [items]");
-        setLineSheet(_.cloneDeep(items));
     }, [items]);
-    useEffect(() => {
-        console.log("useEffect [strContinue]");
 
+    useEffect(() => {
         let expires = new Date()
         expires.setTime(expires.getTime() + (100 * 1000))
        setCookie('cookieContinue',strContinue, { path: '/',  expires})
-
-    //    setStrContinue(cookies.cookieContinue); // To Get Cookie.
-    //    console.log(strContinue);
+       console.log('useEffect strContinue');
+        console.log(strContinue);
+        console.log(cookies);
     }, [strContinue]);
 
     /** */
@@ -103,12 +114,12 @@ const NotifyAuto = () => {
             var arrIndexNotNotify = _.isEmpty(strContinue)? []: strContinue.split(',').map(Number);
             if (!_.isEmpty(arrIndexNotNotify) && arrIndexNotNotify.length > 0) {
                 arrIndexNotNotify.sort((a, b) => b - a);
-          
+                let listTemp=_.cloneDeep(items)
                 arrIndexNotNotify.forEach(inx => {
-                    setLineSheet(lineSheet.splice(inx, 1));
-                })
+                     listTemp.splice(inx, 1);
+                });
+                 setLineSheet(listTemp);
               }
-            // setLineSheet(items);
             for (let i = 0; i < items.length; i++) {
                 var item = items[i];
                 var meaning = item.vi;
@@ -170,17 +181,8 @@ const NotifyAuto = () => {
     };
 
     /** */
-
-    const onStart = async () => {
-        var functionIsRunning = document.getElementById('isNotify').value;
-        if (functionIsRunning === IND_VALUE_ON) {
-            return;
-        }
-
-        setIsNotify(true);
-        var checkExcNotify = IND_VALUE_ON;
-        // var lineInputs = getListLineField();
-        while (checkExcNotify === IND_VALUE_ON) {
+    const execute =  () => {
+        console.log('onStart2');
             let line = "";
 
             let oderRandom = document.getElementById("slGenData").value;
@@ -189,29 +191,22 @@ const NotifyAuto = () => {
                 let index = Math.floor(Math.random() * lineSheet.length);
                 line = lineSheet[index];
                 lineSheet.splice(index, 1);
-                
             } else {
                 line = lineSheet[0];
                 lineSheet.shift();
             }
-            // lineInputs = getListLineField();
-            let indexOrg = items.findIndex(x => x.eng === line.eng);
             console.log(strContinue);
-            console.log(''+ strContinue + _.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString());
-            setStrContinue(''+ strContinue + _.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString());
-
-           
+            let indexOrg = items.findIndex(x => x.eng === line.eng);
+            console.log(''+ strContinue + (_.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString()));
+            const strC = (_.isEmpty(strContinue) ? indexOrg.toString() : String(strContinue)  +',' + indexOrg.toString())
+            setStrContinue(strC);
             if (_.isEmpty(lineSheet)) {
-                setLineSheet(items);
+                setLineSheet(_.cloneDeep(items));
+                setStrContinue('');
             }
 
             onNotiExc(line);
 
-            let valueTime = document.getElementById('timeValue').value;
-            await new Promise(resolve => setTimeout(resolve, (valueTime * 1000)));
-
-            checkExcNotify = document.getElementById('isNotify').value;
-        }
     };
 
     /** */
@@ -274,27 +269,16 @@ const NotifyAuto = () => {
     }
 
     /** */
-    // const getListLineField = () => {
-    //     var txtField = document.getElementById('txtField').value.trim();
-    //     var lineInputs = txtField.split(SPLIT_LINE_INPUT_FIELD);
-    //     let arrResult = [];
-
-    //     lineInputs.forEach(item => {
-    //         if (!_.isEmpty(item)) {
-    //             arrResult.push(item);
-    //         }
-    //     });
-    //     return arrResult;
-    // }
-
-    /** */
     const onStop = () => {
-        setIsNotify(false);
+        setIsStop(true);
+        clearInterval(intervalId);
     };
-
-    /** */
-    const onHideAll = () => {
-        document.getElementById('control').style.display = "none";
+    const onStart = () => {
+        if(isStop){
+            setIsStop(false);
+            execute();
+            setCountNotify(countNotify+1);
+        }
     };
 
     /** */
@@ -369,6 +353,9 @@ const NotifyAuto = () => {
         utterance.volume = 10;
         speak(utterance);
     }
+    const handleChangeCookie = e => {
+        setStrContinue( e.target.value);
+    };
     /** */
     return (
         <div>
@@ -384,18 +371,17 @@ const NotifyAuto = () => {
                         }}>
                             <option value="Words1!A1:C100">Words1</option>
                             <option value="Words2!A1:C100">Words2</option>
+                            <option value="Words3!A1:C100">Words3</option>
                             <option value="Sentence1!A1:C500">Sentence1</option>
                             <option value="Sentence2!A1:C500">Sentence2</option>
+                            <option value="Sentence3!A1:C500">Sentence3</option>
                         </select>
-                        {/* <input className='button-34' type='submit' value="GSheetApi" id='btnGSheetApi' onClick={() => onGSheetApi()} />
-                        <input className='button-34' type='submit' value="GetAPI" id='btnGetAPI' onClick={() => getDataFromExcel()} /> */}
-                        {/* <input className='button-33' type='submit' value="Hide" id='btnHide' onClick={() => onHideAll()} /><br /> */}
 
                         <select className='button-33' name="genData" id="slGenData" onChange={(e) => {
                             onChangeOrder(e.target.value)
                         }}>
-                            <option value="order">order</option>
                             <option value="random">random</option>
+                            <option value="order">order</option>
                         </select>
                         <select className='button-33' name="isUseVoice" id="slIsUseVoice" onChange={(e) => {
                             onChangeIsUseVoice(e.target.value)
@@ -444,24 +430,6 @@ const NotifyAuto = () => {
                                     }}
                                 />
                             </div>
-                            {/*  setting pitch */}
-                            {/* <div style={styleContainerRatePitch}>
-                                <div style={styleFlexRow}>
-                                    <label htmlFor="pitch">Pitch: </label>
-                                    <div className="pitch-value">{pitch}</div>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="2"
-                                    defaultValue="1"
-                                    step="0.1"
-                                    id="pitch"
-                                    onChange={(event) => {
-                                        setPitch(event.target.value);
-                                    }}
-                                />
-                            </div> */}
                             <div>Voice 2:</div>
                             <select className='button-33'
                                 id="voiceVie"
@@ -488,10 +456,10 @@ const NotifyAuto = () => {
                     <input className='button-23' type="text" id='timeValue' />
                     <input className='button-33' type='submit' value="Show" id='btnShow' onClick={() => onShowAll()} />
                     <input className='button-33' type='submit' value="Practice" id='btnPract' onClick={() => onShowPract()} />
-                    <input className='button-59' type="submit" id='isNotify' value={isNotify ? IND_VALUE_ON : IND_VALUE_OFF} /><br />
+                    <input className='button-59' type="submit" id='isNotify' value={!isStop ? IND_VALUE_ON : IND_VALUE_OFF} /><br />
                 </div>
             </div>
-            <textarea id="strContinue" value = {strContinue} ></textarea>
+            <textarea id="strContinue" value = {strContinue} onChange={handleChangeCookie}></textarea>
             {/* <FaStop/> */}
             <div id='pracWord'>
                 <PractWords items={items} oderRandom={oderRandomS}
