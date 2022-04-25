@@ -23,8 +23,8 @@ const NotifyAuto = () => {
     const [oderRandomS, setOderRandomS] = useState('random');
     const [isLoadQuestion, setIsLoadQuestion] = useState(false);
 
-    const [voiceIndex, setVoiceIndex] = useState(1);
-    const [voiceIndexVie, setVoiceIndexVie] = useState(7);
+    const [voiceIndex, setVoiceIndex] = useState(0);
+    const [voiceIndexVie, setVoiceIndexVie] = useState(0);
     const [rate, setRate] = useState(0.6);
     const [sheet, setSheet] = useState("");
     const [speakStrEng, setSpeakStrEng] = useState("");
@@ -58,7 +58,7 @@ const NotifyAuto = () => {
    
     /**  */
     useEffect(() => {
-        document.getElementById('timeValue').value = '5';
+        document.getElementById('timeValue').value = '50';
         document.getElementById('pracWord').style.display = "none";
         document.getElementById('control').style.display = "block";
         document.getElementById('notify-control').style.display = "block";
@@ -68,6 +68,20 @@ const NotifyAuto = () => {
             setStrContinue(cookies.cookieContinue);
         }
     }, []);
+    useEffect(() => {
+        voices.forEach((option, index) => {
+            if(
+                // option.name.includes("Vietnam")||
+            option.lang.includes("vi-VN")){
+                setVoiceIndexVie(index);
+            }
+            if(
+                // option.name.includes("English")||option.name.includes("United States")||
+            option.lang.includes("en-US")){
+                setVoiceIndex(index);
+            }
+        });
+    }, [voices]);
 
     useEffect(() => {
         console.log("useEffect [countNotify]");
@@ -94,7 +108,7 @@ const NotifyAuto = () => {
 
     useEffect(() => {
         let expires = new Date()
-        expires.setTime(expires.getTime() + (100 * 1000))
+        expires.setDate(expires.getDate()+ 100);
        setCookie('cookieContinue',strContinue, { path: '/',  expires})
        console.log('useEffect strContinue');
         console.log(strContinue);
@@ -114,11 +128,13 @@ const NotifyAuto = () => {
             var arrIndexNotNotify = _.isEmpty(strContinue)? []: strContinue.split(',').map(Number);
             if (!_.isEmpty(arrIndexNotNotify) && arrIndexNotNotify.length > 0) {
                 arrIndexNotNotify.sort((a, b) => b - a);
-                let listTemp=_.cloneDeep(items)
+                let listTemp=_.cloneDeep(items);
                 arrIndexNotNotify.forEach(inx => {
                      listTemp.splice(inx, 1);
                 });
                  setLineSheet(listTemp);
+              }else{
+                setLineSheet(_.cloneDeep(items));
               }
             for (let i = 0; i < items.length; i++) {
                 var item = items[i];
@@ -183,7 +199,7 @@ const NotifyAuto = () => {
     /** */
     const execute =  () => {
         console.log('onStart2');
-            let line = "";
+            let line = null;
 
             let oderRandom = document.getElementById("slGenData").value;
 
@@ -386,11 +402,11 @@ const NotifyAuto = () => {
                         <select className='button-33' name="isUseVoice" id="slIsUseVoice" onChange={(e) => {
                             onChangeIsUseVoice(e.target.value)
                         }}>
+                            <option value={IND_SPEAK_ALL_ENG}>Notify Eng - Voice Eng</option>
                             <option value={IND_SPEAK_NO_NOTI_ENG}>Notify Eng - Voice</option>
                             <option value={IND_SPEAK_NOTI_VOICE}>Notify - Voice</option>
                             <option value={IND_SPEAK_NO_VOICE}>Notify</option>
                             <option value={IND_SPEAK_NO_NOTI}>Voice</option>
-                            <option value={IND_SPEAK_ALL_ENG}>Notify Eng - Voice Eng</option>
                             <option value={IND_SPEAK_NOTI_NO_VIE}>notify - Voice Eng</option>
                             <option value={IND_SPEAK_NO_NOTI_NO_VIE}>Voice Eng</option>
                             <option value={IND_SPEAK_NOTI_ENG}>noti Eng</option>
