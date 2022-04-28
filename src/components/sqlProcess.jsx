@@ -17,14 +17,21 @@ const SqlProcess = () => {
     const ARR_NOT_FIELDNAME = ['PRIMARY ', CREATE_TABLE + ' ', 'ENGINE=', 'ENGINE =', 'CHARSET =', 'CHARSET='];
     const INDENT_FIELD_NAME = ['"', '`', `'`];
 
-    const NUMBER_TYPE = [' NUMBER', ' NUMERIC', ' LONG', ' INT', ' INTEGER'];
-    const DATE_TYPE = [' DATE', ' TIMESTAMP'];
+    const NUMBER_TYPE = [' NUMBER', ' NUMERIC', ' LONG', ' INT', ' INTEGER', ' TINYINT', ' BIGINT', ' DECIMAL'
+    , ' FLOAT', ' REAL', ' SMALLMONEY', ' MONEY', ' SMALLINT'];
+    const DATE_TYPE = [' DATE', ' TIMESTAMP', ' DATETIME', ' TIME', ' SMALLDATETIME', ' DATETIME2', ' DATETIMEOFFSET '];
     const NOT_NULL = ['NOT NULL'];
 
-    const [defaultValueInt, setDefaultValueInt] = useState(9);
+    const [defaultValueInt, setDefaultValueInt] = useState(3);
     const [lineNumber, setLineNumber] = useState(1);
-    const [dataChar, setDataChar] = useState('|');
+    const [dataCharFixed, setDataCharFixed] = useState('|');
+    const [dataCharUnique, setDataCharUnique] = useState('*');//for changeable on screen
     const [tableName, setTableName] = useState('');
+    const [replaceFrom, setReplaceFrom] = useState('');
+    const [replaceTo, setReplaceTo] = useState('');
+    const [result, setResult] = useState('');
+
+    const [uniqueMap, setUniqueMap] = useState(new Map());
 
     const STR_INSERT_INTO = 'INSERT INTO ';
     const STR_VALUE = ') VALUES (';
@@ -59,9 +66,9 @@ const SqlProcess = () => {
                 sqlResult += genDataInput(lineInputs) + '\n';
             }
             if (chkDeleteOldData[0].checked) {
-                document.getElementById('output').value = sqlResult;
+                setResult(sqlResult);
             } else {
-                document.getElementById('output').value += '\n' + sqlResult;
+                setResult(result + '\n' + sqlResult);
             }
         }
     }
@@ -133,9 +140,9 @@ const SqlProcess = () => {
                 break;
         }
         if (chkDeleteOldData[0].checked) {
-            document.getElementById('output').value = resultStr;
+            setResult(resultStr);
         } else {
-            document.getElementById('output').value += '\n' + resultStr;
+            setResult(result + '\n' + resultStr);
         }
     }
 
@@ -187,12 +194,31 @@ const SqlProcess = () => {
             // var notNull = false;
             if (checkLineIsField(trLine)) {
 
-                var indentComData = dataChar;
+                var indentComData = dataCharFixed;
                 var dataStr = '';
                 var lengthData = 0;
                 if (trLine.includes(indentComData)) {
                     var orgLine = lineInputs[j].trim();
                     dataStr = orgLine.substring(orgLine.indexOf(indentComData) + 1, orgLine.lastIndexOf(indentComData));
+                } else if (trLine.includes(dataCharUnique)) {
+                    let fieldName = trLine.substring(0, trLine.indexOf(INDENT_SPACE));
+                    let strValueField = "";
+                    strValueField = uniqueMap.get(fieldName);
+                    if (_.isEmpty(strValueField)) {
+                        let intValue = trLine.substring(trLine.indexOf(dataCharUnique) + 1, trLine.lastIndexOf(dataCharUnique));
+                        setUniqueMap(uniqueMap.set(fieldName, String(intValue)));
+                        dataStr = String(intValue);
+                    } else {
+                        let arrValue = strValueField.split(',');
+                        let arrValueInt = arrValue.map(Number);
+                        let maxvalue = Math.max.apply(Math, arrValueInt) + 1;
+
+                        setUniqueMap(uniqueMap.set(fieldName, strValueField + ',' + (maxvalue)));
+                        dataStr = String(maxvalue);
+                    }
+                 if (!checkType(trLine, NUMBER_TYPE)) {
+                    dataStr = 'a'+dataStr;
+                 }
                 } else {
                     if (checkType(trLine, NOT_NULL)) {
                         // notNull = true;
@@ -279,7 +305,8 @@ const SqlProcess = () => {
         return dataStr;
     }
     const onClearOuput = () => {
-        document.getElementById('output').value = '';
+        setResult('');
+        setUniqueMap(new Map());
     };
     const onClearField = () => {
         document.getElementById('txtField').value = '';
@@ -288,7 +315,12 @@ const SqlProcess = () => {
         document.getElementById('txtField').value = await navigator.clipboard.readText();
     };
     const onCoppyOutput = () => {
-        navigator.clipboard.writeText(document.getElementById('output').value);
+        navigator.clipboard.writeText(result);
+    };
+    const replace = () => {
+        if (!_.isEmpty(replaceFrom) && !_.isEmpty(replaceTo)) {
+            setResult(result.replaceAll(replaceFrom, replaceTo))
+        }
     };
     const handleChange = (value, typeName) => {
 
@@ -299,11 +331,17 @@ const SqlProcess = () => {
             case 'lineNumber':
                 setLineNumber(value);
                 break;
-            case 'dataChar':
-                setDataChar(value);
+            case 'dataCharFixed':
+                setDataCharFixed(value);
                 break;
             case 'tableName':
                 setTableName(value);
+                break;
+            case 'replace-from':
+                setReplaceFrom(value);
+                break;
+            case 'replace-to':
+                setReplaceTo(value);
                 break;
             default:
                 break;
@@ -311,8 +349,9 @@ const SqlProcess = () => {
     }
 
     return (
-        <div>
-            <div className='option block'>
+        <div className="sql-body">
+
+            <div className='option block' >
                 <div className='option-left'>
                     <b>Field:</b>
                     <textarea id='txtField'></textarea>
@@ -322,21 +361,21 @@ const SqlProcess = () => {
                         <option value="ddl">ddl</option>
                         {/* <!-- <option value="excel">excel</option> --> */}
                     </select>
-                    <input type="text" value={dataChar}
+                    <input type="text" value={dataCharFixed}
                         onChange={(e) => {
-                            handleChange(e.target.value, "dataChar")
+                            handleChange(e.target.value, "dataCharFixed")
                         }} />
                     <input type='submit' value="Clear" id='btnCleanField' onClick={() => onClearField()} />
                     <input type='submit' value="Paste" id='btnPasteField' onClick={() => pasteData()} />
                 </div>
                 <div className='option-right'>
-                    <div>Table Name:</div>
+                    <div>Table Name(leave it empty If have CREATE TABLE statement):</div>
                     <input type="text" id="txtTableName" value={tableName}
                         onChange={(e) => {
                             handleChange(e.target.value, "tableName")
                         }} />
                     <br />
-                    <div>Default Value Int:</div>
+                    <div>Default value Int lenght:</div>
                     <input type="text" value={defaultValueInt}
                         onChange={(e) => {
                             handleChange(e.target.value, "defaultValueInt")
@@ -369,7 +408,7 @@ const SqlProcess = () => {
                     <div>
                         <select name="cmbformatFeildName" id="cmbformatFeildName">
                             <option value="none">none</option>
-                            <option value="delete">Detele format</option>
+                            <option value="delete">Delete format</option>
                         </select>
                     </div>
                     <select name="cmbTypeChar" id="cmbTypeChar">
@@ -394,13 +433,26 @@ const SqlProcess = () => {
                     <input type='submit' value="genCodeSql" id='btnGenCodeSql' onClick={() => onGenCodeSql()} />
                 </div>
             </div>
-
+            <div class="tooltip">???
+                <span class="tooltiptext">Coppy full character DLL and paste into Field<br /><br /> | - data set cứng. VD: "COL" NUMBER(3,0|abc|) - data =abc ,<br /> * -unique gia tri tự tăng. VD: "FFSFD" NUMBER(3,0*2*) , inititial value =2. Clear textbox để reset gia tri ban dau </span>
+            </div>
             <div className='block '>
                 <input type='submit' value="Clear" id='btnClean' onClick={() => onClearOuput()} />
                 <input className='chkDeleteOldData' type='checkbox' />
                 <input type='submit' value="Copy" id='btnCoppy' onClick={() => onCoppyOutput()} />
+                <div>Replace</div>
+                <input type='text' value={replaceFrom}
+                    onChange={(e) => {
+                        handleChange(e.target.value, "replace-from")
+                    }} />
+                <div> to</div>
+                <input type='text' value={replaceTo}
+                    onChange={(e) => {
+                        handleChange(e.target.value, "replace-to")
+                    }} />
+                <input type='submit' value="replace" id='btnCoppy' onClick={() => replace()} />
                 {/* <!-- <p>result:</p> --> */}
-                <textarea id='output'></textarea>
+                <textarea id='output' value={result}></textarea>
                 <br /><br /><br />
                 <textarea id='tmp'></textarea>
             </div>

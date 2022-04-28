@@ -101,7 +101,6 @@ const NotifyAuto = () => {
 
 
     useEffect(() => {
-        // setLineSheet(_.cloneDeep(items));
         onGSheetApi();
         console.log("useEffect [items]");
     }, [items]);
@@ -265,7 +264,8 @@ const NotifyAuto = () => {
 
                     if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_VOICE)
                         || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE)) {
-                        var notification = new Notification(line);
+                            let str =engStr+":"+viStr;
+                        var notification = new Notification(str);
                     }
 
                 }
@@ -366,7 +366,7 @@ const NotifyAuto = () => {
         } else {
             utterance.voice = voices[vVoiceVie];
         }
-        utterance.volume = 10;
+        utterance.volume = 1;
         speak(utterance);
     }
     const handleChangeCookie = e => {
@@ -378,8 +378,8 @@ const NotifyAuto = () => {
             <div id='notify-control'>
                 <div className='option-noti block' id='control'>
                     <div className='option-left'>
-                        {/* <div>Field:</div> */}
                         <textarea title='f' id='txtField'></textarea>
+                        <div> {speakStrEng}:  {speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div><br />
                     </div>
                     <div className='option-right notify-right'>
                         <select className='button-34' name="sheet" id="slsheet" onChange={(e) => {
@@ -464,9 +464,9 @@ const NotifyAuto = () => {
                             </select>
                         </div>
                     </div>
+                   
                 </div>
                 <div className='control-footer'>
-                    <div> {speakStrEng}:{speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div><br />
                     <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
                     <button className='button-41' id='btnStop' onClick={() => onStop()} >Stop</button>
                     <input className='button-23' type="text" id='timeValue' />
