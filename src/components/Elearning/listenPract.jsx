@@ -267,9 +267,15 @@ const ListenPract = () => {
             <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
             {errorMs}<br />
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
+            {ansListTemp.map((item) => (
+                    <div >
+                        {`${item.eng}`}<FaVolumeUp className='iconSound' onClick={() => speakText(item.eng, true)} />
+                    </div>
+            ))}
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />
             <div>{showAns}</div>
             <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => speakText(lastAnsw, true)} /></div>} </div>
+           
         </div>
     );
 }
