@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import '../common/style.css';
 import {checkType,  randomDate, formatDate} from "../common/common.js";
-import _ from 'lodash';
 
 const JsonProcess = () => {
     const NEW_LINE = '\n';

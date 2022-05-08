@@ -199,3 +199,9 @@ html {
   .sql-body{
       padding-left: 10px;
   }
+  .inline{
+    display: inline !important;
+  }
+  .ans-center{
+    text-align:center !important;
+  }
