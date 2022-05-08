@@ -43,7 +43,6 @@ const ListenPract = () => {
     useEffect(() => {
         console.log("useEffect []");
         getDataFromExcel();
-
     }, []);
     useEffect(() => {
         if (_.isEqual(indexClass, ALL_WORDS)) {
@@ -57,6 +56,13 @@ const ListenPract = () => {
         } else {
             setAnsListTemp(ansList);
         }
+        window.addEventListener('keydown', e => {
+            console.log(e.code);
+            if (e.code === "Space") {
+                speakText(question, true);
+            }
+
+          });
     }, [question]);
 
     useEffect(() => {
@@ -268,7 +274,7 @@ const ListenPract = () => {
             {errorMs}<br />
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
             {ansListTemp.map((item) => (
-                    <div >
+                    <div key={item.eng}>
                         {`${item.eng}`}<FaVolumeUp className='iconSound' onClick={() => speakText(item.eng, true)} />
                     </div>
             ))}
