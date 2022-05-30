@@ -55,7 +55,7 @@ const NotifyAuto = () => {
 
     const IND_VALUE_ON = 'On';
     const IND_VALUE_OFF = 'Off';
-   
+
     /**  */
     useEffect(() => {
         document.getElementById('timeValue').value = '50';
@@ -64,20 +64,20 @@ const NotifyAuto = () => {
         document.getElementById('notify-control').style.display = "block";
         getDataFromExcel();
         // setLineSheet(getListLineField());
-        if(!_.isEmpty(cookies)){
+        if (!_.isEmpty(cookies)) {
             setStrContinue(cookies.cookieContinue);
         }
     }, []);
     useEffect(() => {
         voices.forEach((option, index) => {
-            if(
+            if (
                 // option.name.includes("Vietnam")||
-            option.lang.includes("vi-VN")){
+                option.lang.includes("vi-VN")) {
                 setVoiceIndexVie(index);
             }
-            if(
+            if (
                 // option.name.includes("English")||option.name.includes("United States")||
-            option.lang.includes("en-US")){
+                option.lang.includes("en-US")) {
                 setVoiceIndex(index);
             }
         });
@@ -86,13 +86,13 @@ const NotifyAuto = () => {
     useEffect(() => {
         console.log("useEffect [countNotify]");
         let valueTime = document.getElementById('timeValue').value;
-            if(!isStop){
-                setIntervalId(setTimeout(() => {
-                    execute();
-                setCountNotify(countNotify+1);
+        if (!isStop) {
+            setIntervalId(setTimeout(() => {
+                execute();
+                setCountNotify(countNotify + 1);
             }, (valueTime * 1000)));
         }
-        }, [countNotify]);
+    }, [countNotify]);
 
     useEffect(() => {
         getDataFromExcel();
@@ -107,9 +107,9 @@ const NotifyAuto = () => {
 
     useEffect(() => {
         let expires = new Date()
-        expires.setDate(expires.getDate()+ 100);
-       setCookie('cookieContinue',strContinue, { path: '/',  expires})
-       console.log('useEffect strContinue');
+        expires.setDate(expires.getDate() + 100);
+        setCookie('cookieContinue', strContinue, { path: '/', expires })
+        console.log('useEffect strContinue');
         console.log(strContinue);
         console.log(cookies);
     }, [strContinue]);
@@ -124,17 +124,17 @@ const NotifyAuto = () => {
     const onGSheetApi = () => {
         var arrList = [];
         if (!_.isEmpty(items)) {
-            var arrIndexNotNotify = _.isEmpty(strContinue)? []: strContinue.split(',').map(Number);
+            var arrIndexNotNotify = _.isEmpty(strContinue) ? [] : strContinue.split(',').map(Number);
             if (!_.isEmpty(arrIndexNotNotify) && arrIndexNotNotify.length > 0) {
                 arrIndexNotNotify.sort((a, b) => b - a);
-                let listTemp=_.cloneDeep(items);
+                let listTemp = _.cloneDeep(items);
                 arrIndexNotNotify.forEach(inx => {
-                     listTemp.splice(inx, 1);
+                    listTemp.splice(inx, 1);
                 });
-                 setLineSheet(listTemp);
-              }else{
+                setLineSheet(listTemp);
+            } else {
                 setLineSheet(_.cloneDeep(items));
-              }
+            }
             for (let i = 0; i < items.length; i++) {
                 var item = items[i];
                 var meaning = item.vi;
@@ -152,7 +152,7 @@ const NotifyAuto = () => {
         }
         var strResult = '';
         for (let j = 0; j < arrList.length; j++) {
-            if(!_.isEmpty(arrList[j])){
+            if (!_.isEmpty(arrList[j])) {
                 strResult += arrList[j];
                 strResult += '\n';
             }
@@ -196,31 +196,31 @@ const NotifyAuto = () => {
     };
 
     /** */
-    const execute =  () => {
+    const execute = () => {
         console.log('onStart2');
-            let line = null;
+        let line = null;
 
-            let oderRandom = document.getElementById("slGenData").value;
+        let oderRandom = document.getElementById("slGenData").value;
 
-            if (oderRandom === 'random') {
-                let index = Math.floor(Math.random() * lineSheet.length);
-                line = lineSheet[index];
-                lineSheet.splice(index, 1);
-            } else {
-                line = lineSheet[0];
-                lineSheet.shift();
-            }
-            console.log(strContinue);
-            let indexOrg = items.findIndex(x => x.eng === line.eng);
-            console.log(''+ strContinue + (_.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString()));
-            const strC = (_.isEmpty(strContinue) ? indexOrg.toString() : String(strContinue)  +',' + indexOrg.toString())
-            setStrContinue(strC);
-            if (_.isEmpty(lineSheet)) {
-                setLineSheet(_.cloneDeep(items));
-                setStrContinue('');
-            }
+        if (oderRandom === 'random') {
+            let index = Math.floor(Math.random() * lineSheet.length);
+            line = lineSheet[index];
+            lineSheet.splice(index, 1);
+        } else {
+            line = lineSheet[0];
+            lineSheet.shift();
+        }
+        console.log(strContinue);
+        let indexOrg = items.findIndex(x => x.eng === line.eng);
+        console.log('' + strContinue + (_.isEmpty(strContinue) ? indexOrg.toString() : ',' + indexOrg.toString()));
+        const strC = (_.isEmpty(strContinue) ? indexOrg.toString() : String(strContinue) + ',' + indexOrg.toString())
+        setStrContinue(strC);
+        if (_.isEmpty(lineSheet)) {
+            setLineSheet(_.cloneDeep(items));
+            setStrContinue('');
+        }
 
-            onNotiExc(line);
+        onNotiExc(line);
 
     };
 
@@ -239,7 +239,7 @@ const NotifyAuto = () => {
                     var viStr = line.vi;
                     if (!_.isEmpty(line.customDefine)) {
                         viStr = line.customDefine;
-                    } 
+                    }
                     setSpeakStrEng(engStr);
                     setSpeakStrVie(viStr);
 
@@ -264,7 +264,7 @@ const NotifyAuto = () => {
 
                     if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_VOICE)
                         || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE)) {
-                            let str =engStr+":"+viStr;
+                        let str = engStr + ":" + viStr;
                         var notification = new Notification(str);
                     }
 
@@ -290,10 +290,10 @@ const NotifyAuto = () => {
         clearInterval(intervalId);
     };
     const onStart = () => {
-        if(isStop){
+        if (isStop) {
             setIsStop(false);
             execute();
-            setCountNotify(countNotify+1);
+            setCountNotify(countNotify + 1);
         }
     };
 
@@ -370,7 +370,7 @@ const NotifyAuto = () => {
         speak(utterance);
     }
     const handleChangeCookie = e => {
-        setStrContinue( e.target.value);
+        setStrContinue(e.target.value);
     };
     /** */
     return (
@@ -464,7 +464,7 @@ const NotifyAuto = () => {
                             </select>
                         </div>
                     </div>
-                   
+
                 </div>
                 <div className='control-footer'>
                     <input className='button-41' type='submit' value="Start" id='btnStart' onClick={() => onStart()} />
@@ -475,7 +475,7 @@ const NotifyAuto = () => {
                     <input className='button-59' type="submit" id='isNotify' value={!isStop ? IND_VALUE_ON : IND_VALUE_OFF} /><br />
                 </div>
             </div>
-            <textarea id="strContinue" value = {strContinue} onChange={handleChangeCookie}></textarea>
+            <textarea id="strContinue" value={strContinue} onChange={handleChangeCookie}></textarea>
             {/* <FaStop/> */}
             <div id='pracWord'>
                 <PractWords items={items} oderRandom={oderRandomS}
