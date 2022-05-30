@@ -19,7 +19,8 @@
     "react-scripts": "4.0.3",
     "react-speech-kit": "^3.0.1",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "youtube-subtitles-downloader": "^1.0.1"
   },
   "scripts": {
     "predeploy": "npm run build",

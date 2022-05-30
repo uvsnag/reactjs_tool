@@ -8,6 +8,7 @@ import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
 import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import ListenPract from './components/Elearning/listenPract.jsx'
+import YoutubeSub from './components/vdYtSub'
 import reportWebVitals from './reportWebVitals';
 import { FaHome } from 'react-icons/fa';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";
@@ -24,6 +25,7 @@ ReactDOM.render(
          <Route path="/media" element={<MediaProcess/>} />
          <Route path="/notify" element={<NotifyAuto/>} />
          <Route path="/listen" element={<ListenPract/>} />
+         <Route path="/youtube-sub" element={<YoutubeSub/>} />
           
       </Routes>
     </BrowserRouter>

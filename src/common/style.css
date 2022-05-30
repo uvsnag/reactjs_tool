@@ -2,15 +2,19 @@
     border: 3px solid #000000;
 }
 
-.option ,.dataInput, .option-noti{
+.option,
+.dataInput,
+.option-noti {
     overflow: hidden;
 }
+
 html {
     width: 100vw;
 }
+
 #txtField {
     height: 95%;
-    border:2px dashed #D1C7AC;
+    border: 2px dashed #D1C7AC;
 }
 
 #output,
@@ -19,22 +23,27 @@ html {
     height: 1000px;
 }
 
-.dataInput textarea{
+.dataInput textarea {
     width: 100%;
     height: 400px;
 }
-.msg-eng-check{
+
+.msg-eng-check {
     color: rgb(9, 102, 37);
 }
-.control-footer{
+
+.control-footer {
     padding: 15px 15px 15px 15px;
 }
-#btnPract{
+
+#btnPract {
     margin-left: 10px;
 }
+
 .option-left {
     height: 400px;
 }
+
 #answer {
     font-size: 18px;
     width: 50%;
@@ -46,113 +55,141 @@ html {
     border-left-style: hidden;
     border-bottom-style: 4px solid #035c30;
 }
+
 #answer:focus {
     outline: none;
 }
 
-.btn-prac{
+.btn-prac {
     background-color: rgb(252, 244, 210) !important;
-    box-shadow: rgba(173, 143, 9, .2) 0 -25px 18px -14px inset,rgba(173, 143, 9, 0.15) 0 1px 2px,rgba(173, 143, 9, 0.15) 0 2px 4px,rgba(173, 143, 9, 0.15) 0 4px 8px,rgba(173, 143, 9, 0.15) 0 8px 16px,rgba(173, 143, 9, 0.15) 0 16px 32px !important;
+    box-shadow: rgba(173, 143, 9, .2) 0 -25px 18px -14px inset, rgba(173, 143, 9, 0.15) 0 1px 2px, rgba(173, 143, 9, 0.15) 0 2px 4px, rgba(173, 143, 9, 0.15) 0 4px 8px, rgba(173, 143, 9, 0.15) 0 8px 16px, rgba(173, 143, 9, 0.15) 0 16px 32px !important;
     width: 25% !important;
     margin-left: 20px;
 }
-.msg{
+
+.msg {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size:30px;
+    font-size: 30px;
     color: #1c771c;
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.prac{
+
+.prac {
     border: 3px solid #035c30;
     text-align: center;
 }
-#btnHideWhenPrac{
+
+#btnHideWhenPrac {
     width: 25px;
 }
-.button-33, .button-34{
+
+.button-33,
+.button-34 {
     margin-bottom: 10px;
 }
-.iconSound{
+
+.iconSound {
     margin-left: 10px;
 }
-.button-33, .button-34{
+
+.button-33,
+.button-34 {
     margin-top: 10px;
 }
+
 @media (min-width: 1400px) {
     .option-noti {
         width: 50%;
     }
 }
+
 @media (max-width: 1400px) and (min-width: 1000px) {
     .option-noti {
         width: 70%;
     }
 }
+
 @media (max-width: 1000px) {
     .option-noti {
         width: 92%;
     }
 }
+
 @media (min-width: 700px) {
     .option-right {
         width: 37%;
         float: right;
     }
+
     #txtField {
         width: 100%;
     }
+
     .option-left {
         float: left;
         width: 57%;
     }
-    .notify-right{
+
+    .notify-right {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
-    .prac{
+
+    .prac {
         width: 400px;
-            margin: 15px 15px 15px 15px;
-            padding: 15px 15px 15px 15px; 
+        margin: 15px 15px 15px 15px;
+        padding: 15px 15px 15px 15px;
     }
 }
-@media (min-width: 700px)   {
+
+@media (min-width: 700px) {
     .block {
-        padding: 5px 5px 35px 5px; 
+        padding: 5px 5px 35px 5px;
     }
 }
-@media (max-width: 700px)   {
+
+@media (max-width: 700px) {
     .option-right {
         text-align: center;
         width: 100%;
     }
-    .button-33, .button-59, .button-34{
+
+    .button-33,
+    .button-59,
+    .button-34 {
         margin-left: 10px;
     }
+
     .block {
-        margin: 5px 5px 5px 5px; 
-        padding: 5px 5px 5px 5px; 
+        margin: 5px 5px 5px 5px;
+        padding: 5px 5px 5px 5px;
     }
+
     .option-left {
         margin: 0 auto;
-        
+
     }
-    #txtField{
-        width:  calc(100% - 4px);
+
+    #txtField {
+        width: calc(100% - 4px);
         padding-left: 0px;
         padding-right: 0px;
-        
-        margin: 0px 0px 0px 0px; 
+
+        margin: 0px 0px 0px 0px;
     }
-    #pracWord{
-        padding: 0px 0px 0px 0px; 
-        margin: 5px 5px 5px 5px; 
+
+    #pracWord {
+        padding: 0px 0px 0px 0px;
+        margin: 5px 5px 5px 5px;
     }
-    .prac{
+
+    .prac {
         width: calc(100% - 6px);
     }
-    .control-footer{
+
+    .control-footer {
         text-align: center;
     }
 }
@@ -162,9 +199,9 @@ html {
     display: inline-block;
     border-bottom: 1px dotted black;
     margin-left: 20%;
-  }
-  
-  .tooltip .tooltiptext {
+}
+
+.tooltip .tooltiptext {
     visibility: hidden;
     width: 400px;
     background-color: #555;
@@ -179,9 +216,9 @@ html {
     margin-left: -60px;
     opacity: 0;
     transition: opacity 0.3s;
-  }
-  
-  .tooltip .tooltiptext::after {
+}
+
+.tooltip .tooltiptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -190,18 +227,39 @@ html {
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
-  }
-  
-  .tooltip:hover .tooltiptext {
+}
+
+.tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
-  }
-  .sql-body{
-      padding-left: 10px;
-  }
-  .inline{
+}
+
+.sql-body {
+    padding-left: 10px;
+}
+
+.inline {
     display: inline !important;
-  }
-  .ans-center{
-    text-align:center !important;
-  }
+}
+
+.ans-center {
+    text-align: center !important;
+}
+
+.media-left {
+    padding-left: 10px;
+}
+#media-sub {
+  width: 50%;
+  height: 500px;
+}
+#sub-control {
+    padding-top: 10px;
+  width: 100%;
+  height: 300px;
+  overflow: scroll;
+}
+.sub-item:hover {
+ background-color: antiquewhite;
+ cursor: pointer;
+}
