@@ -5,80 +5,89 @@ import React, { useEffect, useState } from "react";
 import '../common/style.css';
 import _ from 'lodash';
 import { Sub } from './childCpn/subtitle.jsx'
+import YouTube from 'react-youtube';
+
+let player;
 const YoutubeSub = () => {
 
-
     const [arrSub, setArrSub] = useState(Array());
-    const [listSubElement, setListSubElement] = useState(null);
+    const [timeReplay, setTimeReplay] = useState(10000000);
+    const [isReplay, setIsReplay] = useState(false);
+    const [timeStart, setTimeStart] = useState(0);
 
     useEffect(() => {
-        document.getElementById('txtWidth').value = '640';
-        document.getElementById('txtHeight').value = '390';
 
         if (!window.YT) { // If not, load the script asynchronously
             const tag = document.createElement('script');
             tag.src = 'https://www.youtube.com/iframe_api';
       
             // onYouTubeIframeAPIReady will load the video after the script is loaded
-            window.onYouTubeIframeAPIReady = loadVideo;
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
       
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       
           } else { // If script is already there, load the video directly
-            loadVideo();
+            // loadVideo();
+            onYouTubeIframeAPIReady();
           }
-
     }, []);
-    const loadVideo = () => {
-    
-        // the Player object is created uniquely based on the id in props
-        player = new window.YT.Player(`iFMedia`, {
-          videoId: 1,
-          events: {
-            onReady: onPlayerReady,
+    const onYouTubeIframeAPIReady=()=> {
+        player = new window.YT.Player('player', {
+          height: 390,
+          width: 640,
+          videoId: 'M7lc1UVf-VE',
+          playerVars: {
+            'playsinline': 1
           },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
         });
-      };
-
-      const onPlayerReady = event => {
+      }
+      const onPlayerReady=(event)=> {
         event.target.playVideo();
-      };
+      }
+      var done = false;
+      const onPlayerStateChange=(event)=> {
+        if (event.data === window.YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      const stopVideo=() =>{
+        player.stopVideo();
+      }
 
+    
     useEffect(() => {
-        console.log(arrSub);
+        if (isReplay) {
+            console.log('replay');
+            var timerId= setTimeout(() => {
+                player.seekTo(timeStart, true);
+                setTimeReplay(timeReplay+1)
+            }, (timeReplay));
+        }else{
+            // clearInterval(timerId);
+        }
 
-    }, [arrSub]);
+    }, [timeReplay]);
 
-    const onProcess = () => {
-        // var txtSrcMedia = document.getElementById('txtSrcMedia').value;
-        // var url = txtSrcMedia;
-        // if (txtSrcMedia.indexOf('|') !== 0) {
-        //     url = 'https://www.youtube.com/embed/' + txtSrcMedia.substring(txtSrcMedia.lastIndexOf('/') + 1, txtSrcMedia.length).trim();
-        // } else {
-        //     url = url.substring(1, url.length);
-        // }
-        // document.getElementById('iFMedia').src = url;
-
-
-    };
     const onResize = () => {
-        var txtWidth = document.getElementById('txtWidth');
-        var txtWidthValue = txtWidth.value;
-        var txtHeight = document.getElementById('txtHeight').value;
-        document.getElementById('iFMedia').setAttribute("style", `width:${txtWidthValue}px; height:${txtHeight}px`);
+       player.setSize(640,390);
     };
     const onPressBtnVerySmall = () => {
-        document.getElementById('iFMedia').setAttribute("style", `width:100px; height:80px`);
+        player.setSize(100,80);
     };
     const onPressBtnSmall = () => {
-        document.getElementById('iFMedia').setAttribute("style", `width:70px; height:50px`);
+        player.setSize(70,50);
     };
     const onPressBtnMedium = () => {
-        document.getElementById('iFMedia').setAttribute("style", `width:1200px; height:700px`);
+        player.setSize(1200,700);
     };
     const onPressBtnBig = () => {
-        document.getElementById('iFMedia').setAttribute("style", `width:100%; height:1500px`);
+        player.setSize(1200,700);
     };
     const onHideAll = () => {
         document.getElementById('control').style.display = "none";
@@ -110,33 +119,61 @@ const YoutubeSub = () => {
     };
 
     const LineSub = (props) => {
-
         return (
-            <div role ='button' className ='sub-item'>
+            <div role ='button' className ='sub-item'  onClick={(e) => onClickSub(props.time, props.value)}>
                 key ={props.time}   value ={props.value} 
             </div>
         )
     }
-    const onClickSub = () => {
+    const onClickSub = (time, value) => {
+        console.log(time);
+        console.log(value);
+        let timeSecond = time.split(':').reduce((acc,time) => (60 * acc) + +time);
+        setTimeStart(timeSecond);
+        let nextIndex=arrSub.length-1;
+        for(let i=0; i<arrSub.length; i++){
+            if(_.isEqual(arrSub[i].time, time)){
+                nextIndex = i+1;
+            }
+        }
+        let nextTime =arrSub[nextIndex].time.split(':').reduce((acc,time) => (60 * acc) + +time);
+        console.log(timeSecond);
+        console.log(nextTime);
+        setIsReplay(true);
+        setTimeReplay((nextTime-timeSecond)*1000);
+        // let tArr= arrSub.filter(item=>_.isEqual(item.time, time));
+        
+        // console.log(player.getCurrentTime());
+        player.seekTo(timeSecond, true);
+
+    };
+    const onProcess = () => {
+
+    };
+    const onStop = () => {
+        setIsReplay(false);
     };
 
     return (
         
         <div className='media-left'>
-            <iframe title="this is a video, clear!" width="420" height="315" id='iFMedia' src="">
-            </iframe> <br />
-            <div id='control'>
-                <div className='option'>
-                    <div className='option-left'>
-                    <div id = 'sub-control'>
+            {/* <iframe title="this is a video, clear!" width="420" height="315" id='iFMedia' src="">
+            </iframe> <br /> */}
+            <div id="player"></div>
+            {/* <YouTube id='iFMedia' videoId="8UVNT4wvIGY" opts={opts} onReady={_onReady} /> */}
+            <div id=''>
+                <div className=''>
+                    <div className=''>
+                    <div id = 'sub-control' >
                         <div>
                         {arrSub.map((item, index) => <LineSub  key ={`${item.time}${item.value}`}
                         time={item.time}
                         value={item.value}
-                        onClick={() => onClickSub()}
+                        // onClick={(e) => onClickSub(e)}
                     />)}
                         </div>
                     </div>
+                        <input type='submit' value="Stop" id='btnStop' onClick={() => onStop()} />
 
                         <input type="text" id="txtSrcMedia" /> <br />
                         <input type='submit' value="Load" id='btnExecute' onClick={() => onProcess()} />
