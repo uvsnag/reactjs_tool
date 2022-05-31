@@ -5,15 +5,18 @@ import React, { useEffect, useState } from "react";
 import '../common/style.css';
 import _ from 'lodash';
 import { Sub } from './childCpn/subtitle.jsx'
-import YouTube from 'react-youtube';
+// import YouTube from 'react-youtube';
 
 let player;
+var timerId;
 const YoutubeSub = () => {
 
     const [arrSub, setArrSub] = useState(Array());
     const [timeReplay, setTimeReplay] = useState(10000000);
     const [isReplay, setIsReplay] = useState(false);
     const [timeStart, setTimeStart] = useState(0);
+    const [isChangeSub, setIsChangeSub] = useState(false);
+    // const [idVideo, setIdVideo] = useState('');
 
     useEffect(() => {
 
@@ -36,7 +39,7 @@ const YoutubeSub = () => {
         player = new window.YT.Player('player', {
           height: 390,
           width: 640,
-          videoId: 'M7lc1UVf-VE',
+          videoId: "",
           playerVars: {
             'playsinline': 1
           },
@@ -52,7 +55,7 @@ const YoutubeSub = () => {
       var done = false;
       const onPlayerStateChange=(event)=> {
         if (event.data === window.YT.PlayerState.PLAYING && !done) {
-          setTimeout(stopVideo, 6000);
+        //   setTimeout(stopVideo, 6000);
           done = true;
         }
       }
@@ -62,17 +65,27 @@ const YoutubeSub = () => {
 
     
     useEffect(() => {
-        if (isReplay) {
-            console.log('replay');
-            var timerId= setTimeout(() => {
-                player.seekTo(timeStart, true);
-                setTimeReplay(timeReplay+1)
-            }, (timeReplay));
-        }else{
-            // clearInterval(timerId);
+        if(isChangeSub === true){
+            clearInterval(timerId)
         }
+        // if (isReplay===true) {
+            console.log('replay');
+             timerId= setInterval(() => {
+                player.seekTo(timeStart, true);
+                setIsChangeSub(false);
+                // setTimeReplay(timeReplay+1)
+            }, (timeReplay));
+        // }else{
+        //     clearInterval(timerId);
+        // }
 
     }, [timeReplay]);
+
+    useEffect(() => {
+ if (isReplay===false) {
+    clearInterval(timerId);
+ }
+    }, [isReplay]);
 
     const onResize = () => {
        player.setSize(640,390);
@@ -128,6 +141,7 @@ const YoutubeSub = () => {
     const onClickSub = (time, value) => {
         console.log(time);
         console.log(value);
+        setIsChangeSub(true);
         let timeSecond = time.split(':').reduce((acc,time) => (60 * acc) + +time);
         setTimeStart(timeSecond);
         let nextIndex=arrSub.length-1;
@@ -148,7 +162,11 @@ const YoutubeSub = () => {
 
     };
     const onProcess = () => {
-
+        var txtSrcMedia = document.getElementById('txtSrcMedia').value;
+        var url =  txtSrcMedia.substring(txtSrcMedia.lastIndexOf('/') + 1, txtSrcMedia.length).trim();
+        
+        player.loadVideoById(url, 0);
+        // setIdVideo(url);
     };
     const onStop = () => {
         setIsReplay(false);
@@ -174,7 +192,7 @@ const YoutubeSub = () => {
                         </div>
                     </div>
                         <input type='submit' value="Stop" id='btnStop' onClick={() => onStop()} />
-
+                        <br />
                         <input type="text" id="txtSrcMedia" /> <br />
                         <input type='submit' value="Load" id='btnExecute' onClick={() => onProcess()} />
                         <br />
