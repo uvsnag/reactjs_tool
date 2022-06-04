@@ -246,20 +246,3 @@ html {
     text-align: center !important;
 }
 
-.media-left {
-    padding-left: 10px;
-}
-#media-sub {
-  width: 50%;
-  height: 500px;
-}
-#sub-control {
-    padding-top: 10px;
-  width: 60%;
-  height: 300px;
-  overflow: scroll;
-}
-.sub-item:hover {
- background-color: antiquewhite;
- cursor: pointer;
-}
