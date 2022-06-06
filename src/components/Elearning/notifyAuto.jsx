@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // this is a tools for studying english
 import React, { useEffect, useState } from "react";
 import '../../common/style.css';
