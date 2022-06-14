@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import SqlProcess from './components/sqlProcess.jsx'
+import SqlProcess from './components/gen_tools_it/sqlProcess'
 import JsonProcess from './components/jsonProcess.jsx'
 import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'

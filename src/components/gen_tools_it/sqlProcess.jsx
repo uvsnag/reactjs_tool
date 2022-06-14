@@ -1,7 +1,7 @@
 // this file is converted from javascript to reactjs so some code is not optimized
 import React, { useEffect, useState } from "react";
-import '../common/style.css';
-import { checkType, replaceArr, randomDate, formatDate, checkIncludesArr } from "../common/common.js";
+import '../../common/style.css';
+import { checkType, replaceArr, randomDate, formatDate, checkIncludesArr } from "../../common/common.js";
 import _ from 'lodash';
 
 const SqlProcess = () => {
@@ -14,13 +14,15 @@ const SqlProcess = () => {
     const DATA_NULL = 'NULL';
     const CREATE_TABLE = 'CREATE TABLE';
 
-    const ARR_NOT_FIELDNAME = ['PRIMARY ', CREATE_TABLE + ' ', 'ENGINE=', 'ENGINE =', 'CHARSET =', 'CHARSET='];
+    const ARR_NOT_FIELDNAME = [' FOREIGN KEY ', 'PRIMARY ', CREATE_TABLE + ' ', 'ENGINE=', 'ENGINE =', 'CHARSET =', 
+         'CHARSET=' , 'SEGMENT', ' CREATION ', 'REFERENCES "', 'CONSTRAINT "'];
     const INDENT_FIELD_NAME = ['"', '`', `'`];
 
     const NUMBER_TYPE = [' NUMBER', ' NUMERIC', ' LONG', ' INT', ' INTEGER', ' TINYINT', ' BIGINT', ' DECIMAL'
     , ' FLOAT', ' REAL', ' SMALLMONEY', ' MONEY', ' SMALLINT'];
     const DATE_TYPE = [' DATE', ' TIMESTAMP', ' DATETIME', ' TIME', ' SMALLDATETIME', ' DATETIME2', ' DATETIMEOFFSET '];
     const NOT_NULL = ['NOT NULL'];
+    const ARR_REPLACE_LENGHT = ['CHAR'];
 
     const [defaultValueInt, setDefaultValueInt] = useState(3);
     const [lineNumber, setLineNumber] = useState(1);
@@ -162,6 +164,9 @@ const SqlProcess = () => {
                 if (formatFieldName === 'delete') {
                     fieldName = replaceArr(fieldName, INDENT_FIELD_NAME, '');
                 }
+                if(fieldName.trim().startsWith('(')){
+                    fieldName = fieldName.trim().substring(1);
+                }
                 arrFieldName.push(fieldName.trim());
             }
         }
@@ -244,6 +249,7 @@ const SqlProcess = () => {
                             if (lengthData === 0) {
                                 trLine = trLine.trim();
                                 lengthData = trLine.substring(trLine.lastIndexOf(INDENT_BEGIN_FIELD_LENGTH) + 1, trLine.indexOf(INDENT_FIELD_LENGTH_END));
+                                lengthData= replaceArr(lengthData, ARR_REPLACE_LENGHT, '').trim();
                             }
                             dataStr = randomStr(lengthData, randomTemplateStr);
                         }
@@ -275,6 +281,7 @@ const SqlProcess = () => {
         var dataStr = '';
         var firstNumber = trLine.substring(trLine.lastIndexOf(INDENT_BEGIN_FIELD_LENGTH) + 1, trLine.indexOf(INDENT_COMMA));
         var secondNumber = trLine.substring(trLine.indexOf(INDENT_COMMA) + 1, trLine.indexOf(INDENT_FIELD_LENGTH_END));
+        secondNumber = replaceArr(secondNumber, ARR_REPLACE_LENGHT, '').trim();
         var data1 = randomStr(firstNumber - secondNumber - 1, randomTemplateStr);
         var data2 = randomStr(secondNumber, randomTemplateStr);
 
@@ -408,7 +415,7 @@ const SqlProcess = () => {
                     <div>
                         <select name="cmbformatFeildName" id="cmbformatFeildName">
                             <option value="none">none</option>
-                            <option value="delete">Delete format</option>
+                            <option value="delete">Delete format indent</option>
                         </select>
                     </div>
                     <select name="cmbTypeChar" id="cmbTypeChar">
