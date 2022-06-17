@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import '../common/styleYoutSub.css';
+import './styleYoutSub.css';
 import _ from 'lodash';
-import { Sub } from './childCpn/subtitle.jsx'
+import { Sub } from './subtitle.jsx'
 // import YTSubtitles from "youtube-subtitles-downloader";
 // import YouTube from 'react-youtube';
 
@@ -12,6 +12,7 @@ let startTime = 0;
 let nextTime = 100000;
 let oldClickClass = null;
 let isReplay = true;
+let modeReplay = '';
 let mode = '';
 let indexOfCurrSub = 0;
 
@@ -34,6 +35,10 @@ const YoutubeSub = () => {
     const MODE_NOMAL = 'NOMAL';
     const MODE_FOCUS_SUB = 'FOCUS_SUB';
     const MODE_FOCUS_SUB2 = 'FOCUS_SUB2';
+    
+    const REPLAY_NO = 'REPLACE_NO';
+    const REPLAY_YES = 'REPLACE_YES';
+
 
 
     const LOOP_CUSTOM = 'LOOP_CUSTOM';
@@ -75,6 +80,7 @@ const YoutubeSub = () => {
         customLoopMode = LOOP_NONE;
         customLoopA = NOT_VALUE_TIME;
         customLoopB = NOT_VALUE_TIME;
+        modeReplay = REPLAY_YES;
         return () => {
             console.log("destroy interval:" + interval);
             clearInterval(interval);
@@ -139,7 +145,7 @@ const YoutubeSub = () => {
                     oldClickClass = `sub-item${mmss}`;
                 }
 
-                if (_.isEqual(customLoopMode, LOOP_NONE) && _.isEqual(currentTime, nextTime.toString()) && isReplay === true) {
+                if (_.isEqual(customLoopMode, LOOP_NONE) && _.isEqual(currentTime, nextTime.toString()) && isReplay === true && modeReplay === REPLAY_YES) {
                     console.log("replay at:" + startTime);
                     player.seekTo(startTime, true)
                 }
@@ -171,7 +177,7 @@ const YoutubeSub = () => {
 
         });
         setArrSub(arrTemp);
-        if(!_.isEmpty(arrTemp)){
+        if (!_.isEmpty(arrTemp)) {
             document.getElementById('load-sub').style.display = "none";
         }
     };
@@ -314,7 +320,7 @@ const YoutubeSub = () => {
             intervalCusLoop = setInterval(() => {
                 if (_.isEqual(customLoopMode, LOOP_CUSTOM)) {
                     let cusCurrentTime = player.getCurrentTime().toFixed(FIXED_VALUE);
-                    if (_.isEqual(cusCurrentTime, customLoopB.toString()) && isReplay === true) {
+                    if (_.isEqual(cusCurrentTime, customLoopB.toString()) && isReplay === true && modeReplay === REPLAY_YES) {
                         console.log("replay at:" + customLoopA);
                         player.seekTo(customLoopA, true)
                     }
@@ -397,14 +403,6 @@ const YoutubeSub = () => {
                 <input type='submit' value="clear" onClick={() => onClearCusLoop()} />
             </div>
             <div id='subline-control'>
-                <div id='sub-control' >
-                    {arrSub.map((item, index) => <LineSub key={`${item.time}${item.value}`}
-                        time={item.time}
-                        value={item.value}
-                    />)}
-                </div>
-                <input type='submit' value="Continue" onClick={() => onChangeReplay()} />
-
                 <select onChange={(e) => {
                     onChangeMode(e.target.value)
                 }}>
@@ -412,9 +410,22 @@ const YoutubeSub = () => {
                     <option value={MODE_FOCUS_SUB}>Focus</option>
                     <option value={MODE_FOCUS_SUB2}>Focus2</option>
                 </select>
+                <select onChange={(e) => {
+                    modeReplay = e.target.value;
+                }}>
+                    <option value={REPLAY_YES}>REPLAY_YES</option>
+                    <option value={REPLAY_NO}>REPLAY_NO</option>
+                </select>
+                <input type='submit' value="Continue" onClick={() => onChangeReplay()} />
 
                 <input type='submit' value="<<" onClick={() => onPrevLine()} />
                 <input type='submit' value=">>" onClick={() => onNextLine()} />
+                <div id='sub-control' >
+                    {arrSub.map((item, index) => <LineSub key={`${item.time}${item.value}`}
+                        time={item.time}
+                        value={item.value}
+                    />)}
+                </div>
                 <input type='submit' value="+/-" onClick={() => onShowHide()} />
             </div>
             <div className='option-right'> <br />

@@ -8,7 +8,7 @@ import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
 import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import ListenPract from './components/Elearning/listenPract.jsx'
-import YoutubeSub from './components/vdYtSub'
+import YoutubeSub from './components/YTSub/vdYtSub'
 import reportWebVitals from './reportWebVitals';
 import { FaHome } from 'react-icons/fa';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";
