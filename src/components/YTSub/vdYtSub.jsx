@@ -3,7 +3,7 @@ import './styleYoutSub.css';
 import _ from 'lodash';
 import { Sub } from './subtitle.jsx'
 // import YTSubtitles from "youtube-subtitles-downloader";
-// import YouTube from 'react-youtube';
+ import YouTube from 'react-youtube';
 
 let player;
 let interval;
@@ -35,7 +35,7 @@ const YoutubeSub = () => {
     const MODE_NOMAL = 'NOMAL';
     const MODE_FOCUS_SUB = 'FOCUS_SUB';
     const MODE_FOCUS_SUB2 = 'FOCUS_SUB2';
-    
+
     const REPLAY_NO = 'REPLACE_NO';
     const REPLAY_YES = 'REPLACE_YES';
 
@@ -212,6 +212,13 @@ const YoutubeSub = () => {
         var url = txtSrcMedia.substring(txtSrcMedia.lastIndexOf('=') + 1, txtSrcMedia.length).trim();
         player.loadVideoById(url, 0);
 
+        setTimeout(() => {
+            var icon = document.querySelectorAll(".annotation.annotation-type-custom.iv-branding");
+                console.log(icon)
+                console.log(`document.querySelectorAll(".annotation.annotation-type-custom.iv-branding")[0].style.display="none"`)
+            // icon[0].style.display="none";
+        }, 5000);
+
     };
     const onChangeReplay = () => {
         isReplay = false;
@@ -289,6 +296,9 @@ const YoutubeSub = () => {
         }
     }
     const onStartStop = (e) => {
+        if(player.getVideoUrl()==="https://www.youtube.com/watch"){
+            onProcess();
+        }
         if (player.getPlayerState() !== 1) {
             player.playVideo();
         } else {
@@ -341,6 +351,15 @@ const YoutubeSub = () => {
         }
 
     }
+    const onShowAll = () => {
+        document.getElementById('hide1').style.display = "block";
+        document.getElementById('hide2').style.display = "block";
+    }
+    const onHideAll = () => {
+        
+        document.getElementById('hide1').style.display = "none";
+        document.getElementById('hide2').style.display = "none";
+    }
     const onChangeMode = (value) => {
         mode = value;
         switch (mode) {
@@ -367,77 +386,85 @@ const YoutubeSub = () => {
             <div id='vd-control'>
                 <div id="player"></div><br />
 
-                <select onChange={(e) => {
-                    onChangeSize(e.target.value)
-                }}>
-                    <option value={SIZE_640X390}>640x390</option>
-                    <option value={SIZE_1X1}>1x1</option>
-                    <option value={SIZE_1200X700}>1200x700</option>
-                    <option value={SIZE_900X630}>900x630</option>
-                    <option value={SIZE_800X560}>800x560</option>
-                    <option value={SIZE_400X280}>400x280</option>
-                    <option value={SIZE_300X210}>300x210</option>
-                    <option value={SIZE_100X80}>100x80</option>
-                    <option value={SIZE_70X50}>70x50</option>
-                    <option value={SIZE_CUSTOM}>SIZE_CUSTOM</option>
-                </select>
-                <input type="text" id="txtSrcMedia" onKeyDown={e => handleKeyDown(e)} />
-                <input type='submit' value="Load" id='btnExecute' onClick={() => onProcess()} />
-                <br />
-                <input className='txt-10-pc' type="text" value={widthYt} onChange={(e) => {
-                    onChangeWith(e.target.value)
-                }}
-                />x
-                <input className='txt-10-pc' type="text" value={heightYt} onChange={(e) => {
-                    setHeightYt(e.target.value)
-                }} />
-                <input type='submit' value="Resize" onClick={() => onChangeSize(SIZE_CUSTOM)} />
-            </div>
-            <input type='submit' value="|>" onClick={() => onStartStop()} />
-            <input type='submit' value="+/-" onClick={() => onShowHideVideo()} />
-
-            <input type='submit' value="Custom" onClick={() => onChangeLoop()} />
-            <div id='cus-loop-control'>
-                <div>{customLoopAs}{_.isEmpty(customLoopAs) ? '' : '-'}{customLoopBs}</div>
-                <input type='submit' value="Add point" onClick={() => onAddPoint()} />
-                <input type='submit' value="clear" onClick={() => onClearCusLoop()} />
-            </div>
-            <div id='subline-control'>
-                <select onChange={(e) => {
-                    onChangeMode(e.target.value)
-                }}>
-                    <option value={MODE_NOMAL}>Nomal</option>
-                    <option value={MODE_FOCUS_SUB}>Focus</option>
-                    <option value={MODE_FOCUS_SUB2}>Focus2</option>
-                </select>
-                <select onChange={(e) => {
-                    modeReplay = e.target.value;
-                }}>
-                    <option value={REPLAY_YES}>REPLAY_YES</option>
-                    <option value={REPLAY_NO}>REPLAY_NO</option>
-                </select>
-                <input type='submit' value="Continue" onClick={() => onChangeReplay()} />
-
-                <input type='submit' value="<<" onClick={() => onPrevLine()} />
-                <input type='submit' value=">>" onClick={() => onNextLine()} />
-                <div id='sub-control' >
-                    {arrSub.map((item, index) => <LineSub key={`${item.time}${item.value}`}
-                        time={item.time}
-                        value={item.value}
-                    />)}
+                    <select onChange={(e) => {
+                        onChangeSize(e.target.value)
+                    }}>
+                        <option value={SIZE_640X390}>640x390</option>
+                        <option value={SIZE_1X1}>1x1</option>
+                        <option value={SIZE_1200X700}>1200x700</option>
+                        <option value={SIZE_900X630}>900x630</option>
+                        <option value={SIZE_800X560}>800x560</option>
+                        <option value={SIZE_400X280}>400x280</option>
+                        <option value={SIZE_300X210}>300x210</option>
+                        <option value={SIZE_100X80}>100x80</option>
+                        <option value={SIZE_70X50}>70x50</option>
+                        <option value={SIZE_CUSTOM}>SIZE_CUSTOM</option>
+                    </select>
+                <div id="hide1">
+                    <input type="text" id="txtSrcMedia" onKeyDown={e => handleKeyDown(e)} />
+                    <input type='submit' value="Load" id='btnExecute' onClick={() => onProcess()} />
+                    <br />
+                    <input className='txt-10-pc' type="text" value={widthYt} onChange={(e) => {
+                        onChangeWith(e.target.value)
+                    }}
+                    />x
+                    <input className='txt-10-pc' type="text" value={heightYt} onChange={(e) => {
+                        setHeightYt(e.target.value)
+                    }} />
+                    <input type='submit' value="Resize" onClick={() => onChangeSize(SIZE_CUSTOM)} />
                 </div>
-                <input type='submit' value="+/-" onClick={() => onShowHide()} />
             </div>
-            <div className='option-right'> <br />
-            </div>
-            <div id='load-sub'>
+                <input type='submit' value="|>" onClick={() => onStartStop()} />
+                <input type='submit' value="+/-" onClick={() => onShowHideVideo()} />
+            <div id="hide2">
 
-                <input type='submit' value="loadSub" id='btnLoadSube' onClick={() => loadSub()} /><br />
-                <textarea id='media-sub'></textarea>
-            </div>
+                <input type='submit' value="Custom" onClick={() => onChangeLoop()} />
+                <div id='cus-loop-control'>
+                    <div>{customLoopAs}{_.isEmpty(customLoopAs) ? '' : '-'}{customLoopBs}</div>
+                    <input type='submit' value="Add point" onClick={() => onAddPoint()} />
+                    <input type='submit' value="clear" onClick={() => onClearCusLoop()} />
+                </div>
+                <div id='subline-control'>
+                    <select onChange={(e) => {
+                        onChangeMode(e.target.value)
+                    }}>
+                        <option value={MODE_NOMAL}>Nomal</option>
+                        <option value={MODE_FOCUS_SUB}>Focus</option>
+                        <option value={MODE_FOCUS_SUB2}>Focus2</option>
+                    </select>
+                    <select onChange={(e) => {
+                        modeReplay = e.target.value;
+                    }}>
+                        <option value={REPLAY_YES}>REPLAY_YES</option>
+                        <option value={REPLAY_NO}>REPLAY_NO</option>
+                    </select>
+                    <input type='submit' value="Continue" onClick={() => onChangeReplay()} />
 
+                    <input type='submit' value="<<" onClick={() => onPrevLine()} />
+                    <input type='submit' value=">>" onClick={() => onNextLine()} />
+                    <div id='sub-control' >
+                        {arrSub.map((item, index) => <LineSub key={`${item.time}${item.value}`}
+                            time={item.time}
+                            value={item.value}
+                        />)}
+                    </div>
+                    <input type='submit' value="+/-" onClick={() => onShowHide()} />
+                </div>
+                <div className='option-right'> <br />
+                </div>
+                <div id='load-sub'>
+
+                    <input type='submit' value="loadSub" id='btnLoadSube' onClick={() => loadSub()} /><br />
+                    <textarea id='media-sub'></textarea>
+                </div>
+
+                <br />
+            </div>
             <br />
-
+            <br />
+            <br />
+            <input type='submit' value="H" id='btnHide' onClick={() => onHideAll()} />
+            <input type='submit' value="S" id='btnShow' onClick={() => onShowAll()} />
         </div>
     )
 
