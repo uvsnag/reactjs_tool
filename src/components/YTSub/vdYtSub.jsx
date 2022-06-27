@@ -54,6 +54,7 @@ const YoutubeSub = () => {
     const SIZE_640X390 = '640X390';
     const SIZE_400X280 = '400X280';
     const SIZE_300X210 = '300X210';
+    const SIZE_150X120 = '150X120';
     const SIZE_100X80 = '100X80';
     const SIZE_70X50 = '70X50';
     const SIZE_1X1 = '1X1';
@@ -103,6 +104,9 @@ const YoutubeSub = () => {
             height: 390,
             width: 640,
             videoId: "",
+          /*   modestbranding: 1,
+            rel: 0,
+            controls: 0, */
             playerVars: {
                 'playsinline': 1
             },
@@ -212,14 +216,33 @@ const YoutubeSub = () => {
         var url = txtSrcMedia.substring(txtSrcMedia.lastIndexOf('=') + 1, txtSrcMedia.length).trim();
         player.loadVideoById(url, 0);
 
-        setTimeout(() => {
-            var icon = document.querySelectorAll(".annotation.annotation-type-custom.iv-branding");
-                console.log(icon)
-                console.log(`document.querySelectorAll(".annotation.annotation-type-custom.iv-branding")[0].style.display="none"`)
-            // icon[0].style.display="none";
-        }, 5000);
-
     };
+    const removeLogo = () => {
+        var icon = document.querySelectorAll(".ytp-player-content.ytp-iv-player-content");
+        if (icon && icon[0]) {
+                icon[0].style.display = "none";
+            }
+
+
+        //  var iframe = document.getElementById("player");
+        //  console.log(iframe);
+         console.log(`document.querySelectorAll(".ytp-player-content.ytp-iv-player-content")[0].style.display="none"`);
+         navigator.clipboard.writeText(`document.querySelectorAll(".ytp-player-content.ytp-iv-player-content")[0].style.display="none"`);
+        // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        // console.log(innerDoc.body);
+
+
+
+        // var icon = document.querySelectorAll("#vd-control #player #document" );
+        // console.log(icon);
+        // if (icon && icon[0]) {
+        //     icon[0].style.display = "none";
+        // }
+
+
+
+
+    }
     const onChangeReplay = () => {
         isReplay = false;
     }
@@ -239,6 +262,9 @@ const YoutubeSub = () => {
                 break;
             case SIZE_300X210:
                 player.setSize(300, 210);
+                break;
+            case SIZE_150X120:
+                player.setSize(150, 120);
                 break;
             case SIZE_100X80:
                 player.setSize(100, 80);
@@ -396,6 +422,7 @@ const YoutubeSub = () => {
                         <option value={SIZE_800X560}>800x560</option>
                         <option value={SIZE_400X280}>400x280</option>
                         <option value={SIZE_300X210}>300x210</option>
+                        <option value={SIZE_150X120}>150x120</option>
                         <option value={SIZE_100X80}>100x80</option>
                         <option value={SIZE_70X50}>70x50</option>
                         <option value={SIZE_CUSTOM}>SIZE_CUSTOM</option>
@@ -403,6 +430,8 @@ const YoutubeSub = () => {
                 <div id="hide1">
                     <input type="text" id="txtSrcMedia" onKeyDown={e => handleKeyDown(e)} />
                     <input type='submit' value="Load" id='btnExecute' onClick={() => onProcess()} />
+                    <br />
+                    <input type='submit' value="Remove Info"  onClick={() => removeLogo()} />
                     <br />
                     <input className='txt-10-pc' type="text" value={widthYt} onChange={(e) => {
                         onChangeWith(e.target.value)
