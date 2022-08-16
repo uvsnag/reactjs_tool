@@ -9,6 +9,7 @@ import MediaProcess from './components/mediaProcess.jsx'
 import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import ListenPract from './components/Elearning/listenPract.jsx'
 import YoutubeSub from './components/YTSub/vdYtSub'
+import RedirectUrl from './components/RedirectUrl'
 import reportWebVitals from './reportWebVitals';
 import { FaHome } from 'react-icons/fa';
 import {Link, Route,  Routes, BrowserRouter } from "react-router-dom";
@@ -26,6 +27,7 @@ ReactDOM.render(
          <Route path="/notify" element={<NotifyAuto/>} />
          <Route path="/listen" element={<ListenPract/>} />
          <Route path="/youtube-sub" element={<YoutubeSub/>} />
+         <Route path="/tip_management" element={<RedirectUrl url="https://uvsnag.github.io/tip_management_for_nodejs/" />} />
           
       </Routes>
     </BrowserRouter>

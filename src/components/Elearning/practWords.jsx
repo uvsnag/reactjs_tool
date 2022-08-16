@@ -1,5 +1,5 @@
 // this is a tools for studying english
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import '../../common/style.css';
 import _ from 'lodash';
 import '../../common/styleTemplate.css';
@@ -12,9 +12,11 @@ const PractWords = (props) => {
     const [showAns, setShowAns] = useState('');
     const [lastAnsw, setLastAnsw] = useState('');
     const [arrLineTemp, setArrLineTemp] = useState([]);
+    const inputAns = useRef(null)
 
     useEffect(() => {
         console.log("useEffect []");
+        
     }, []);
     useEffect(() => {
 
@@ -28,9 +30,10 @@ const PractWords = (props) => {
         }
         console.log("useEffect [props.isLoadQuestion]");
 
+        inputAns.current.focus()
         // eslint-disable-next-line
     }, [props.isLoadQuestion]);
-
+   
 
     const onChangeQuestion = () => {
         if (!_.isEmpty(props.items)) {
@@ -77,6 +80,9 @@ const PractWords = (props) => {
         if (e.key === 'Enter') {
             onCheck();
         }
+        if (e.key === 'Shift') {
+            onShow();
+        }
     }
     const onShow = () => {
         if (_.isEmpty(showAns)) {
@@ -84,12 +90,13 @@ const PractWords = (props) => {
         } else {
             setShowAns("");
         }
+        
     }
 
     return (
         <div className='prac'>
             <div>{question}</div><br />
-            <input type="text" id='answer' onKeyDown={e => handleKeyDown(e)} /><br />
+            <input type="text" id='answer' ref={inputAns} onKeyDown={e => handleKeyDown(e)} /><br />
             <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />

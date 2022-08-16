@@ -11,6 +11,7 @@ function App() {
         <Link to="/notify">notify</Link>
         <Link to="/listen">listenPrac</Link>
         <Link to="/youtube-sub">youtube-sub</Link>
+        <Link to="/tip_management">tip-management</Link>
       </div>
     </div>
   );
