@@ -475,8 +475,8 @@ const NotifyAuto = () => {
                     <input className='button-33' type='submit' value="Practice" id='btnPract' onClick={() => onShowPract()} />
                     <input className='button-59' type="submit" id='isNotify' value={!isStop ? IND_VALUE_ON : IND_VALUE_OFF} /><br />
                 </div>
+                <textarea id="strContinue" value={strContinue} onChange={handleChangeCookie}></textarea>
             </div>
-            <textarea id="strContinue" value={strContinue} onChange={handleChangeCookie}></textarea>
             {/* <FaStop/> */}
             <div id='pracWord'>
                 <PractWords items={items} oderRandom={oderRandomS}
