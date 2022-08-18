@@ -11,6 +11,7 @@ const PractWords = (props) => {
     const [errorMs, setErrorMs] = useState("");
     const [showAns, setShowAns] = useState('');
     const [lastAnsw, setLastAnsw] = useState('');
+    const [mode, setMode] = useState(1);
     const [arrLineTemp, setArrLineTemp] = useState([]);
     const inputAns = useRef(null)
 
@@ -36,6 +37,7 @@ const PractWords = (props) => {
    
 
     const onChangeQuestion = () => {
+        
         if (!_.isEmpty(props.items)) {
             let item = null;
             let arrTemp = _.isEmpty(arrLineTemp) ? _.cloneDeep(props.items) : _.cloneDeep(arrLineTemp);
@@ -71,17 +73,30 @@ const PractWords = (props) => {
                 setErrorMs('correct!');
                 document.getElementById('answer').value = "";
                 setLastAnsw(answer);
+                if(mode === 1){
+                    props.speakText(answer, true);
+                }
             } else {
                 setErrorMs('wrong!');
             }
         }
     };
     const handleKeyDown = (e) => {
+        console.log(e.key)
         if (e.key === 'Enter') {
             onCheck();
         }
         if (e.key === 'Shift') {
             onShow();
+        }
+        if (e.key === 'ArrowDown') {
+            props.speakText(lastAnsw, true);
+        }
+        if (e.key === 'ArrowRight') {
+            props.speakText(answer, true);
+        }
+        if (e.key === 'Control') {
+            setMode(mode===0?1:0);
         }
     }
     const onShow = () => {
@@ -102,6 +117,8 @@ const PractWords = (props) => {
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />
             <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => props.speakText(showAns, true)} />}</div>
             <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => props.speakText(lastAnsw, true)} /></div>} </div>
+            <br/>
+            <div><button className='button-12' onClick={() => setMode(mode===0?1:0)}>{mode}</button></div>
         </div>
     );
 }
