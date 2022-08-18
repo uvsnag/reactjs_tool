@@ -83,20 +83,21 @@ const PractWords = (props) => {
     };
     const handleKeyDown = (e) => {
         console.log(e.key)
+        console.log(e.nativeEvent.code)
         if (e.key === 'Enter') {
             onCheck();
         }
-        if (e.key === 'Shift') {
+        if (e.nativeEvent.code === 'ShiftLeft') {
             onShow();
         }
-        if (e.key === 'ArrowDown') {
+        if (e.nativeEvent.code === 'ControlLeft') {
+            setMode(mode===0?1:0);
+        }
+        if (e.nativeEvent.code === 'ControlRight') {
             props.speakText(lastAnsw, true);
         }
-        if (e.key === 'ArrowRight') {
+        if (e.nativeEvent.code === 'ShiftRight') {
             props.speakText(answer, true);
-        }
-        if (e.key === 'Control') {
-            setMode(mode===0?1:0);
         }
     }
     const onShow = () => {
