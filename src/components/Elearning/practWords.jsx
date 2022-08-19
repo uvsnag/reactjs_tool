@@ -99,6 +99,9 @@ const PractWords = (props) => {
         if (e.nativeEvent.code === 'ShiftRight') {
             props.speakText(answer, true);
         }
+        if (e.nativeEvent.code === 'End') {
+            onChangeQuestion();
+        }
     }
     const onShow = () => {
         if (_.isEmpty(showAns)) {
