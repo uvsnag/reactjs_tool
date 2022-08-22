@@ -8,7 +8,7 @@ import { gapi } from 'gapi-script';
 import config from '../../common/config.js';
 import { load } from './api/sheetDataRepository.js';
 import PractWords from './practWords.jsx'
-import { FaCircleNotch } from 'react-icons/fa';
+import { FaCircleNotch , FaRedo} from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
 import { FaVolumeUp } from 'react-icons/fa';
 import { useCookies } from 'react-cookie'
@@ -478,10 +478,12 @@ const NotifyAuto = () => {
                 <textarea id="strContinue" value={strContinue} onChange={handleChangeCookie}></textarea>
             </div>
             {/* <FaStop/> */}
+            {/* <button className='button-12 inline' onClick={() => getDataFromExcel()}><FaRedo/></button> */}
             <div id='pracWord'>
                 <PractWords items={items} oderRandom={oderRandomS}
                     speakText={speakText}
-                    isLoadQuestion={isLoadQuestion} />
+                    isLoadQuestion={isLoadQuestion} 
+                    getDataFromExcel = {getDataFromExcel}/>
             </div>
             <div id='btnHideWhenPrac' onClick={() => onHideWhenPrac()} ><FaCircleNotch /></div>
         </div>

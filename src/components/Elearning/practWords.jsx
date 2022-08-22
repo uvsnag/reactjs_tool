@@ -3,17 +3,22 @@ import React, { useEffect, useState, useRef  } from "react";
 import '../../common/style.css';
 import _ from 'lodash';
 import '../../common/styleTemplate.css';
-import { FaRegFrown, FaRegSmile, FaVolumeUp } from 'react-icons/fa';
+import { FaRegFrown, FaRegSmile, FaVolumeUp, FaRedo, FaVolumeMute } from 'react-icons/fa';
 
 const PractWords = (props) => {
+
+    const MODE_NONE = 'None'
+    const MODE_SPEAKE_CHANGE_QUST = 'Speak';
+
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [errorMs, setErrorMs] = useState("");
     const [showAns, setShowAns] = useState('');
     const [lastAnsw, setLastAnsw] = useState('');
-    const [mode, setMode] = useState(1);
+    const [mode, setMode] = useState(MODE_NONE);
     const [arrLineTemp, setArrLineTemp] = useState([]);
     const inputAns = useRef(null)
+
 
     useEffect(() => {
         console.log("useEffect []");
@@ -73,7 +78,7 @@ const PractWords = (props) => {
                 setErrorMs('correct!');
                 document.getElementById('answer').value = "";
                 setLastAnsw(answer);
-                if(mode === 1){
+                if(mode === MODE_SPEAKE_CHANGE_QUST){
                     props.speakText(answer, true);
                 }
             } else {
@@ -91,7 +96,7 @@ const PractWords = (props) => {
             onShow();
         }
         if (e.nativeEvent.code === 'ControlLeft') {
-            setMode(mode===0?1:0);
+            setMode(mode===MODE_NONE?MODE_SPEAKE_CHANGE_QUST:MODE_NONE);
         }
         if (e.nativeEvent.code === 'ControlRight') {
             props.speakText(lastAnsw, true);
@@ -101,6 +106,9 @@ const PractWords = (props) => {
         }
         if (e.nativeEvent.code === 'End') {
             onChangeQuestion();
+        }
+        if (e.nativeEvent.code === 'Home') {
+            props.getDataFromExcel();
         }
     }
     const onShow = () => {
@@ -122,7 +130,10 @@ const PractWords = (props) => {
             <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => props.speakText(showAns, true)} />}</div>
             <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => props.speakText(lastAnsw, true)} /></div>} </div>
             <br/>
-            <div><button className='button-12' onClick={() => setMode(mode===0?1:0)}>{mode}</button></div>
+            <div >
+                <button className='button-12 inline' onClick={() => setMode(mode===MODE_NONE?MODE_SPEAKE_CHANGE_QUST:MODE_NONE)}>{mode === MODE_NONE?<FaVolumeMute/>:<FaVolumeUp/>}</button>
+                <button className='button-12 inline' onClick={() => props.getDataFromExcel()}><FaRedo/></button>
+            </div>
         </div>
     );
 }

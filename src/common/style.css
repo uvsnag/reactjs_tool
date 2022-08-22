@@ -48,12 +48,12 @@ html {
     font-size: 18px;
     width: 50%;
     height: 25px;
+    border: 2px solid #2b2b2b;
     text-align: center;
     background-color: transparent;
-    border-top-style: hidden;
-    border-right-style: hidden;
-    border-left-style: hidden;
-    border-bottom-style: 4px solid #035c30;
+    border-top-style: hidden !important;
+    border-right-style: hidden !important;
+    border-left-style: hidden !important;
 }
 
 #answer:focus {
