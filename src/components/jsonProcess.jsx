@@ -5,7 +5,7 @@ import {checkType,  randomDate, formatDate} from "../common/common.js";
 
 const JsonProcess = () => {
     const NEW_LINE = '\n';
-    const QUOTES = '\"';
+    const QUOTES = '"';
     const TAB = '   ';
     const COLON = ':';
     const COMMA = ',';

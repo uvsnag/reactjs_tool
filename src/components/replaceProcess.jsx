@@ -2,7 +2,6 @@
 //state is not used in this file
 import React, { useEffect } from "react";
 import '../common/style.css';
-import _ from 'lodash';
 
 const ReplaceProcess = () => {
 

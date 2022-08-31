@@ -7,11 +7,12 @@ function App() {
         <Link to="/sql">sql</Link>
         <Link to="/json">json</Link>
         <Link to="/replace">replace</Link>
-        <Link to="/media">media</Link>
-        <Link to="/notify">notify</Link>
-        <Link to="/listen">listenPrac</Link>
-        <Link to="/youtube-sub">youtube-sub</Link>
         <Link to="/tip_management">tip-management</Link>
+        <Link to="/media">media</Link><br/>
+        <Link to="/notify">notify</Link>
+        <Link to="/listen">listenWordPrac</Link>
+        <Link to="/youtube-sub">youtube-sub</Link>
+        <Link to="/listenTens">listenPassagePrac</Link>
       </div>
     </div>
   );

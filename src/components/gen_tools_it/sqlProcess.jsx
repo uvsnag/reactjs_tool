@@ -27,7 +27,8 @@ const SqlProcess = () => {
     const [defaultValueInt, setDefaultValueInt] = useState(3);
     const [lineNumber, setLineNumber] = useState(1);
     const [dataCharFixed, setDataCharFixed] = useState('|');
-    const [dataCharUnique, setDataCharUnique] = useState('*');//for changeable on screen
+    //const [dataCharUnique, setDataCharUnique] = useState('*');//for changeable on screen
+    const dataCharUnique ='*'
     const [tableName, setTableName] = useState('');
     const [replaceFrom, setReplaceFrom] = useState('');
     const [replaceTo, setReplaceTo] = useState('');

@@ -8,7 +8,7 @@ import { gapi } from 'gapi-script';
 import config from '../../common/config.js';
 import { load } from './api/sheetDataRepository.js';
 import PractWords from './practWords.jsx'
-import { FaCircleNotch , FaRedo} from 'react-icons/fa';
+import { FaCircleNotch} from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
 import { FaVolumeUp } from 'react-icons/fa';
 import { useCookies } from 'react-cookie'
@@ -266,6 +266,7 @@ const NotifyAuto = () => {
                     if (_.isEqual(isSpeak, IND_SPEAK_NOTI_VOICE) || _.isEqual(isSpeak, IND_SPEAK_NO_VOICE)
                         || _.isEqual(isSpeak, IND_SPEAK_NOTI_NO_VIE)) {
                         let str = engStr + ":" + viStr;
+                        // eslint-disable-next-line no-redeclare, no-unused-vars
                         var notification = new Notification(str);
                     }
 

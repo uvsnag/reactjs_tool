@@ -3,7 +3,7 @@ import './styleYoutSub.css';
 import _ from 'lodash';
 import { Sub } from './subtitle.jsx'
 // import YTSubtitles from "youtube-subtitles-downloader";
- import YouTube from 'react-youtube';
+// import YouTube from 'react-youtube';
 
 let player;
 let interval;

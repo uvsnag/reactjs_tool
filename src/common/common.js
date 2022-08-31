@@ -66,3 +66,19 @@ export const randomList =(arr) => {
 
     return "";
 }
+
+export const isEqualStr = (str1, str2, isCaseInte) => {
+    if (str1 == null || str2 == null) {
+        return false;
+    }
+    let arr = [' ', '   ', ',', '.', '!', '?', '’', "'", '<', '>',
+                '—', ':', '[', ']', '(', ')', '*', '-', '+', '=',
+                 '@', '#', '%', '^', '&', '!']
+    replaceArr(str1, arr, "")
+    replaceArr(str2, arr, "")
+    if (isCaseInte === true) {
+        str1 = str1.toUpperCase();
+        str2 = str2.toUpperCase();
+    }
+    return _.isEqual(str1, str2);
+}
