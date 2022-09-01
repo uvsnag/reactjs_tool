@@ -248,12 +248,15 @@ html {
 /* --------------- */
 .area-input{
     border: 2px dashed #D1C7AC;
-    width: 100%;
-    height: 400px;
+    width: 80%;
+    height: 200px;
 }
 .container-left{
     margin-left: 10px;
     width: 700px;
+}
+.width-120{
+   width: 120px;
 }
 .width-220{
    width: 220px;
@@ -269,5 +272,5 @@ html {
     color: red;
 }
 .ans-check-hint{
-    color: rgb(215, 174, 6);
+    color: rgb(215, 174, 6) !important;
 }

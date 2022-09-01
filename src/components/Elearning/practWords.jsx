@@ -3,7 +3,8 @@ import React, { useEffect, useState, useRef  } from "react";
 import '../../common/style.css';
 import _ from 'lodash';
 import '../../common/styleTemplate.css';
-import { FaRegFrown, FaRegSmile, FaVolumeUp, FaRedo, FaVolumeMute } from 'react-icons/fa';
+import { FaVolumeUp, FaRedo, FaVolumeMute } from 'react-icons/fa';
+import { validateArrStrCheck, arrStrCheckToStr} from "../Elearning/commonElearn";
 
 const PractWords = (props) => {
 
@@ -12,7 +13,7 @@ const PractWords = (props) => {
 
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
-    const [errorMs, setErrorMs] = useState("");
+    /* const [errorMs, setErrorMs] = useState(""); */
     const [showAns, setShowAns] = useState('');
     const [lastAnsw, setLastAnsw] = useState('');
     const [mode, setMode] = useState(MODE_NONE);
@@ -75,14 +76,16 @@ const PractWords = (props) => {
             var answ = answer.replaceAll('.', '');
             if (ans.trim().toUpperCase() === answ.toUpperCase().trim()) {
                 onChangeQuestion();
-                setErrorMs('correct!');
+                /* setErrorMs('correct!'); */
                 document.getElementById('answer').value = "";
                 setLastAnsw(answer);
                 if(mode === MODE_SPEAKE_CHANGE_QUST){
                     props.speakText(answer, true);
                 }
             } else {
-                setErrorMs('wrong!');
+                let arr = validateArrStrCheck(ans, answer)
+                setShowAns(arrStrCheckToStr(arr))
+                /* setErrorMs('wrong!'); */
             }
         }
     };
@@ -98,10 +101,10 @@ const PractWords = (props) => {
         if (e.nativeEvent.code === 'ControlLeft') {
             setMode(mode===MODE_NONE?MODE_SPEAKE_CHANGE_QUST:MODE_NONE);
         }
-        if (e.nativeEvent.code === 'ControlRight') {
+        if (e.nativeEvent.code === 'ShiftRight') {
             props.speakText(lastAnsw, true);
         }
-        if (e.nativeEvent.code === 'ShiftRight') {
+        if (e.nativeEvent.code === 'ControlRight') {
             props.speakText(answer, true);
         }
         if (e.nativeEvent.code === 'End') {
@@ -123,11 +126,12 @@ const PractWords = (props) => {
     return (
         <div className='prac'>
             <div>{question}</div><br />
+            {/* <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => props.speakText(showAns, true)} />}</div> */}
+            <div dangerouslySetInnerHTML={{__html: showAns}}></div>
             <input type="text" id='answer' ref={inputAns} onKeyDown={e => handleKeyDown(e)} /><br />
-            <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
+           {/*  <div className='msg'>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div> */}
             <input className='button-33' type='submit' value="Check" id='btnSubmit' onClick={() => onCheck()} />
             <input className='button-12' type='submit' value="Show Ans" id='btnShowAns' onClick={() => onShow()} />
-            <div>{showAns}{_.isEmpty(showAns) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => props.speakText(showAns, true)} />}</div>
             <div>{_.isEmpty(lastAnsw) ? <div></div> : <div>Last : {lastAnsw}<FaVolumeUp className='iconSound' onClick={() => props.speakText(lastAnsw, true)} /></div>} </div>
             <br/>
             <div >

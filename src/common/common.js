@@ -82,3 +82,8 @@ export const isEqualStr = (str1, str2, isCaseInte) => {
     }
     return _.isEqual(str1, str2);
 }
+
+export const setCharAt = (str,index,chr) => {
+    if(index > str.length-1) return str;
+    return str.substring(0,index) + chr + str.substring(index+1);
+}

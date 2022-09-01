@@ -1,35 +1,34 @@
 // this is a tools for studying english
 import React, { useEffect, useState, useRef } from "react";
 import '../../common/style.css';
-import _ from 'lodash';
 import '../../common/styleTemplate.css';
-import { FaEyeSlash, FaRegSmile, FaVolumeUp, FaRegFrown } from 'react-icons/fa';
+import { FaEyeSlash } from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
 import { replaceArr, isEqualStr } from "../../common/common.js";
+import {
+    validateArrStrCheck, arrStrCheckToStr,
+    autoCorrectLetter, genHintStrAns
+} from "../Elearning/commonElearn";
 
 let arrSentence = []
 let indexST = -1;
-let arrIndexErr = []
-let arrIndexErr2 = []
-let currIndexErr = -1
 let sentence = "";
 const ListenTensPract = () => {
     const onEnd = () => {
         // You could do something here after speaking has finished
     };
-    const [input, setInput] = useState("");
     const [voiceIndex, setVoiceIndex] = useState(0);
     const { speak, voices } = useSpeechSynthesis({
         onEnd,
     });
     const [rate, setRate] = useState(1);
     const [answer, setAnswer] = useState("");
-    const [errorMs, setErrorMs] = useState("");
+    /* const [errorMs, setErrorMs] = useState(""); */
     const [lastAnsw, setLastAnsw] = useState('');
     const inputAns = useRef(null)
 
     useEffect(() => {
-       document.getElementById('inputTxt').value =`table, column, newValue, oldValue, date, system(if need), ip, UserAgent, clumnReference, operatorReference, valueReference. All tables/columns/actions that need to log are configurable.`
+        // document.getElementById('inputTxt').value =`table, column, newValue, oldValue, date, system(if need), ip, UserAgent, clumnReference, operatorReference, valueReference. All tables/columns/actions that need to log are configurable.`
     }, []);
     useEffect(() => {
         voices.forEach((option, index) => {
@@ -39,7 +38,6 @@ const ListenTensPract = () => {
         });
     }, [voices]);
     const onHideInput = (idName) => {
-        console.log(idName)
         var prac = document.getElementById(`${idName}`);
         if (prac.style.display === "block" || prac.style.display === "") {
             document.getElementById(`${idName}`).style.display = "none";
@@ -50,130 +48,70 @@ const ListenTensPract = () => {
 
     const onStart = () => {
         let input = document.getElementById('inputTxt').value;
-        let arrReg= [',', '?', '(', ')', '!', '—', '-', '=', '”', '“',
-        ';']
-        input = replaceArr(input,arrReg, '.' )
+        let arrReg = [',', '?', '(', ')', '!', '—', '-', '=', '”', '“', '\n',
+            ';']
+        input = replaceArr(input, arrReg, '.')
         arrSentence = input.split('.')
-        console.log(arrSentence)
         indexST = -1
+        setAnswer('')
         changeSentence()
         document.getElementById(`inputTxt`).style.display = "none";
+        inputAns.current.focus()
     };
     const changeSentence = () => {
         indexST = indexST + 1;
-        if(indexST >= arrSentence.length){
+        if (indexST >= arrSentence.length) {
             indexST = 0;
         }
-        setAnswer('')
         setLastAnsw(sentence)
-        sentence = arrSentence[indexST];
+        sentence = arrSentence[indexST].trim();
         speakAns();
     };
     const speakAns = () => {
         speakText(sentence)
     };
-    const onGenStrCheck = (inputAns) =>{
-        let htmlCheck =''
-        let arrAns = sentence.split('')
-        let arrInput = inputAns.split('')
-
-        let flagRight = false;
-        let flagWrong = false;
-
-        for( let i=0; i<arrAns.length; i++){
-            if(isEqualStr(arrAns[i], arrInput[i], true)){
-                if(flagWrong === true){
-                    htmlCheck = htmlCheck.concat("</span>")
-                    flagWrong = false
-                }
-                if(flagRight === false){
-                    htmlCheck = htmlCheck.concat("<span class ='ans-check-right'>")
-                    flagRight = true
-                }
-            }else{
-                arrIndexErr.push(i)
-                arrIndexErr2.push(htmlCheck.length)
-                if(flagRight === true){
-                    htmlCheck = htmlCheck.concat("</span>")
-                    flagRight = false
-                }
-                if(flagWrong === false){
-                    htmlCheck = htmlCheck.concat("<span class ='ans-check-wrong'>")
-                    flagWrong = true
-                }
-            }
-            if(arrInput[i]){
-                htmlCheck = htmlCheck.concat(arrInput[i])
-            }
-        }
-        if(flagWrong === true){
-            htmlCheck = htmlCheck.concat("</span>")
-            flagWrong = false
-        }
-        if(flagRight === true){
-            htmlCheck = htmlCheck.concat("</span>")
-            flagRight = false
-        }
-        console.log(arrIndexErr)
-       console.log(arrIndexErr2)
-        return htmlCheck
-    }
-    const onCheck = () =>{
+    const onCheck = () => {
         let ans = document.getElementById('answer').value;
-        if(isEqualStr(sentence, ans, true)){
+        if (isEqualStr(sentence, ans, true)) {
+            let arr = validateArrStrCheck(ans, sentence)
+            setAnswer(arrStrCheckToStr(arr))
             changeSentence()
-            setErrorMs('correct!');
-        }else{
-            setAnswer(onGenStrCheck(ans))
-            setErrorMs('wrong!');
+            /* setErrorMs('correct!'); */
+            document.getElementById('answer').value = "";
+        } else {
+            let arr = validateArrStrCheck(ans, sentence)
+            setAnswer(arrStrCheckToStr(arr))
+            /* setErrorMs('wrong!'); */
         }
 
     }
     const handleKeyDownInput = (e) => {
-        if (e.nativeEvent.code === 'End' || e.nativeEvent.code === 'Home') {
+        if (e.nativeEvent.code === 'PageUp') {
             onHideInput('inputTxt')
+            inputAns.current.focus()
+        }
+        if (e.nativeEvent.code === 'PageDown' ) {
+            onHideInput('control')
+            inputAns.current.focus()
         }
     }
 
-    const genHintStrAns = () => {
-       // let strClassErr = `<span class ='ans-check-wrong'>`
-        let inputAns = document.getElementById('answer').value;
-        let strHtml = onGenStrCheck(inputAns)
-        let resStr = ""
-
-        currIndexErr = currIndexErr + 1;
-        
-        let firstStr = strHtml.substring(0, arrIndexErr2[currIndexErr])
-        let lastStr = strHtml.substring(arrIndexErr2[currIndexErr] + 1, strHtml.length)
-        console.log(firstStr)
-        console.log(lastStr)
-        resStr = firstStr 
-            + "<span class ='ans-check-hint'>"
-            + sentence.substring(arrIndexErr[currIndexErr], arrIndexErr[currIndexErr] + 1) 
-            + "</span>" + lastStr;
-        setAnswer(resStr)
-    }
     const handleKeyDown = (e) => {
         console.log(e.nativeEvent.code)
         if (e.key === 'Enter') {
             onCheck();
         }
         if (e.nativeEvent.code === 'ShiftLeft') {
-            // if(answer.length>0){
-            //     setAnswer('')
-            // }else{
-            //     setAnswer(sentence)
-            // }
-            genHintStrAns();
-
+            let arr = genHintStrAns('answer', sentence);
+            setAnswer(arrStrCheckToStr(arr))
         }
-        // if (e.nativeEvent.code === 'ControlLeft') {
-        //     setMode(mode===MODE_NONE?MODE_SPEAKE_CHANGE_QUST:MODE_NONE);
-        // }
-        if (e.nativeEvent.code === 'ControlRight') {
-            speakText(lastAnsw);
+        if (e.nativeEvent.code === 'ControlLeft') {
+            autoCorrectLetter('answer', sentence);
         }
         if (e.nativeEvent.code === 'ShiftRight') {
+            speakText(lastAnsw);
+        }
+        if (e.nativeEvent.code === 'ControlRight') {
             speakAns();
         }
         if (e.nativeEvent.code === 'End') {
@@ -181,6 +119,13 @@ const ListenTensPract = () => {
         }
         if (e.nativeEvent.code === 'Home') {
             onStart();
+        }
+        if (e.nativeEvent.code === 'PageUp') {
+            onHideInput('inputTxt')
+        }
+        if (e.nativeEvent.code === 'PageDown' ) {
+            onHideInput('control')
+            
         }
     }
     const speakText = (speakStr) => {
@@ -196,49 +141,49 @@ const ListenTensPract = () => {
     }
     return (
         <div className='container-left'>
-            <textarea id='inputTxt' className='area-input' onKeyDown={e => handleKeyDownInput(e)}></textarea>
+            <div id="control">
 
-            <button className='button-12 inline' id='hideBtn' onClick={() => onHideInput('inputTxt')} ><FaEyeSlash /></button>
-            <span> </span>
-            <button className='button-12 inline' id='Start' onClick={() => onStart()} >Start</button>
-            <span> </span>
-            <select className='button-12 inline'
-                id="voice"
-                name="voice"
-                value={voiceIndex || ''}
-                onChange={(event) => {
-                    setVoiceIndex(event.target.value);
-                }}
-            >
-                <option value="">Default</option>
-                {voices.map((option, index) => (
-                    <option key={option.voiceURI} value={index}>
-                        {`${option.lang} - ${option.name}`}
-                    </option>
-                ))}
-            </select>
-            <span> </span>
-            <br/>
-            <input className="width-220 range-color"
-                type="range"
-                min="0.2"
-                max="1.5"
-                defaultValue="1"
-                step="0.1"
-                id="rate"
-                onChange={(event) => {
-                    setRate(event.target.value);
-                }}
-            />
-            <span className="rate-value">{rate}</span>
-            <br/>
-            <div className=''>{errorMs === 'wrong!' ? <FaRegFrown /> : <FaRegSmile />}</div>
-            {/* <div>{answer}{_.isEmpty(answer) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(answer)} />}</div> */}
-            <div dangerouslySetInnerHTML={{__html: answer}}></div>
-            <br/>
+                <textarea id='inputTxt' className='area-input' onKeyDown={e => handleKeyDownInput(e)}></textarea>
+                <br />
+                <button className='button-12 inline' id='hideBtn' onClick={() => onHideInput('inputTxt')} ><FaEyeSlash /></button>
+                <span> </span>
+                <button className='button-12 inline' id='Start' onClick={() => onStart()} >Start</button>
+                <span> </span>
+                <select className='button-12 inline width-120 '
+                    id="voice"
+                    name="voice"
+                    value={voiceIndex || ''}
+                    onChange={(event) => {
+                        setVoiceIndex(event.target.value);
+                    }}
+                >
+                    <option value="" >Default</option>
+                    {voices.map((option, index) => (
+                        <option key={option.voiceURI} value={index}>
+                            {`${option.lang} - ${option.name}`}
+                        </option>
+                    ))}
+                </select>
+                <span> </span>
+                <br />
+                <input className="width-220 range-color"
+                    type="range"
+                    min="0.2"
+                    max="1.5"
+                    defaultValue="1"
+                    step="0.1"
+                    id="rate"
+                    onChange={(event) => {
+                        setRate(event.target.value);
+                    }}
+                />
+                <span className="rate-value">{rate}</span>
+                <br />
+            </div>
             <div className="">
-            <input type="text" id='answer' ref={inputAns} onKeyDown={e => handleKeyDown(e)} /><br />
-            <div>{lastAnsw}</div>
+                <div dangerouslySetInnerHTML={{ __html: answer }}></div>
+                <br />
+                <input type="text" id='answer' ref={inputAns} onKeyDown={e => handleKeyDown(e)} /><br />
             </div>
         </div>
     );

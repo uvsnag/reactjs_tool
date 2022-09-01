@@ -16,6 +16,7 @@ const ListenPract = () => {
         marginBottom: 12,
     };
     const ALL_WORDS = "-1";
+    const sheet = config.listen.sheetDefault;
 
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
@@ -24,7 +25,7 @@ const ListenPract = () => {
 
     const [items, setItems] = useState([]);
     const [classItems, setClassItems] = useState([]);
-    const [sheet, setSheet] = useState(config.listen.sheetDefault);
+   // const [sheet, setSheet] = useState(config.listen.sheetDefault);
     const [voiceIndex, setVoiceIndex] = useState(0);
     const [indexClass, setIndexClass] = useState();
     const [ansList, setAnsList] = useState([]);
@@ -41,8 +42,8 @@ const ListenPract = () => {
 
 
     useEffect(() => {
-        console.log("useEffect []");
         getDataFromExcel();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         if (_.isEqual(indexClass, ALL_WORDS)) {
@@ -63,10 +64,12 @@ const ListenPract = () => {
             }
 
           });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [question]);
 
     useEffect(() => {
         onChangeQuestion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ansList]);
     useEffect(() => {
         if (_.isEmpty(items)) {
@@ -98,14 +101,12 @@ const ListenPract = () => {
         if (!_.isEmpty(answer)) {
             onCheck();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [answer]);
 
     useEffect(() => {
-        // let index=indexClass;
         let arrAnsList = [];
         if (indexClass === ALL_WORDS) {
-            // let quest = items[(Math.random() * ansList.length) | 0];
-            // index = quest.classItem;
             arrAnsList = items;
         } else {
             items.forEach(item => {
