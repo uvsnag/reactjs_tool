@@ -7,8 +7,9 @@ import { useSpeechSynthesis } from "react-speech-kit";
 import { replaceArr, isEqualStr } from "../../common/common.js";
 import {
     validateArrStrCheck, arrStrCheckToStr,
-    autoCorrectLetter, genHintStrAns
+    autoCorrectLetter, genHintStrAns, TYPE_WRONG
 } from "../Elearning/commonElearn";
+import _ from 'lodash';
 
 let arrSentence = []
 let indexST = -1;
@@ -106,10 +107,32 @@ const ListenTensPract = () => {
             setAnswer(arrStrCheckToStr(arr))
         }
         if (e.nativeEvent.code === 'ControlLeft') {
+            let preAnsInput =  document.getElementById('answer').value
             autoCorrectLetter('answer', sentence);
+            let afterAnsInput =  document.getElementById('answer').value
+            if(_.isEqual(preAnsInput, afterAnsInput)&&(preAnsInput.length < sentence.length)){
+                let len = preAnsInput.length
+                preAnsInput = preAnsInput + sentence.substring(len, len+1)
+                document.getElementById('answer').value = preAnsInput;
+            }
         }
         if (e.nativeEvent.code === 'ShiftRight') {
-            speakText(lastAnsw);
+            let ansInput =  document.getElementById('answer').value
+            if(ansInput===""){
+                speakText(lastAnsw);
+            }else{
+                let indexFirstErr = 0;
+                let arrStrCheck = validateArrStrCheck(ansInput, sentence)
+                for(let i=0; i< arrStrCheck.length; i++){
+                    if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
+                        indexFirstErr = i
+                        break;
+                    }
+                }
+                let strSpeak = sentence.substring(0, indexFirstErr)
+                let index = strSpeak.lastIndexOf(" ")
+                speakText(sentence.substring(index, sentence.length));
+            }
         }
         if (e.nativeEvent.code === 'ControlRight') {
             speakAns();
