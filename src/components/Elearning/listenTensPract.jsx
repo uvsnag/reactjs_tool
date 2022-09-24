@@ -4,7 +4,7 @@ import '../../common/style.css';
 import '../../common/styleTemplate.css';
 import { FaEyeSlash } from 'react-icons/fa';
 import { useSpeechSynthesis } from "react-speech-kit";
-import { replaceArr, isEqualStr } from "../../common/common.js";
+import { replaceArr, isEqualStr, getPosition } from "../../common/common.js";
 import {
     validateArrStrCheck, arrStrCheckToStr,
     autoCorrectLetter, genHintStrAns, TYPE_WRONG
@@ -30,6 +30,7 @@ const ListenTensPract = () => {
 
     useEffect(() => {
         // document.getElementById('inputTxt').value =`table, column, newValue, oldValue, date, system(if need), ip, UserAgent, clumnReference, operatorReference, valueReference. All tables/columns/actions that need to log are configurable.`
+        document.getElementById('numbWord').value = 2
     }, []);
     useEffect(() => {
         voices.forEach((option, index) => {
@@ -60,6 +61,9 @@ const ListenTensPract = () => {
         inputAns.current.focus()
     };
     const changeSentence = () => {
+        if(_.isEmpty(arrSentence)){
+            onStart()
+        }
         indexST = indexST + 1;
         if (indexST >= arrSentence.length) {
             indexST = 0;
@@ -117,23 +121,9 @@ const ListenTensPract = () => {
             }
         }
         if (e.nativeEvent.code === 'ShiftRight') {
-            let ansInput =  document.getElementById('answer').value
-            if(ansInput===""){
-                speakText(lastAnsw);
-            }else{
-                let indexFirstErr = 0;
-                let arrStrCheck = validateArrStrCheck(ansInput, sentence)
-                for(let i=0; i< arrStrCheck.length; i++){
-                    if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
-                        indexFirstErr = i
-                        break;
-                    }
-                }
-                let strSpeak = sentence.substring(0, indexFirstErr)
-                let index = strSpeak.lastIndexOf(" ")
-                speakText(sentence.substring(index, sentence.length));
-            }
+            speakText(getNextSubAns());
         }
+      
         if (e.nativeEvent.code === 'ControlRight') {
             speakAns();
         }
@@ -148,9 +138,36 @@ const ListenTensPract = () => {
         }
         if (e.nativeEvent.code === 'PageDown' ) {
             onHideInput('control')
-            
+        }
+        if (e.nativeEvent.code === 'ArrowDown') {
+            speakText(lastAnsw);
+        }
+        if (e.nativeEvent.code === 'ArrowUp' ) {
+            let numOfWord = document.getElementById('numbWord').value 
+            let nextStr = getNextSubAns()
+            let index = getPosition(nextStr, ' ', Number(numOfWord))
+            if(index>0){
+                speakText(nextStr.substring(0, index));
+            }else{
+                speakText(nextStr);
+            }
         }
     }
+    const getNextSubAns =()=>{
+        let ansInput =  document.getElementById('answer').value
+        let indexFirstErr = 0;
+        let arrStrCheck = validateArrStrCheck(ansInput, sentence)
+        for(let i=0; i< arrStrCheck.length; i++){
+            if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
+                indexFirstErr = i
+                break;
+            }
+        }
+        let strSpeak = sentence.substring(0, indexFirstErr)
+        let index = getPosition(strSpeak, ' ', 1)
+        return sentence.substring(index, sentence.length);
+    }
+
     const speakText = (speakStr) => {
 
         var vVoice = document.getElementById('voice').value;
@@ -187,6 +204,7 @@ const ListenTensPract = () => {
                         </option>
                     ))}
                 </select>
+                <input id='numbWord' className='width-30'/>
                 <span> </span>
                 <br />
                 <input className="width-220 range-color"

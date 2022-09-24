@@ -3,6 +3,9 @@ import _ from 'lodash';
 export const randomDate=(start, end)=> {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
+export const getPosition =(string, subString, index) => {
+    return string.split(subString, index).join(subString).length;
+}
 export const formatDate=(date)=> {
     var formatDate = document.getElementById("formatDate").value;
     const d = new Date(date)
