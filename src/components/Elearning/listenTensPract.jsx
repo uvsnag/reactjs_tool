@@ -120,12 +120,12 @@ const ListenTensPract = () => {
                 document.getElementById('answer').value = preAnsInput;
             }
         }
-        if (e.nativeEvent.code === 'ShiftRight') {
-            speakText(getNextSubAns());
+        if (e.nativeEvent.code === 'Insert') {
+            speakAns();
         }
       
         if (e.nativeEvent.code === 'ControlRight') {
-            speakAns();
+            speakText(getNextSubAns());
         }
         if (e.nativeEvent.code === 'End') {
             changeSentence();
@@ -142,7 +142,7 @@ const ListenTensPract = () => {
         if (e.nativeEvent.code === 'ArrowDown') {
             speakText(lastAnsw);
         }
-        if (e.nativeEvent.code === 'ArrowUp' ) {
+        if (e.nativeEvent.code === 'ShiftRight' ) {
             let numOfWord = document.getElementById('numbWord').value 
             let nextStr = getNextSubAns()
             let index = getPosition(nextStr, ' ', Number(numOfWord))
