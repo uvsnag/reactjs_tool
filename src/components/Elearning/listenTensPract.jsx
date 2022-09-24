@@ -164,7 +164,7 @@ const ListenTensPract = () => {
             }
         }
         let strSpeak = sentence.substring(0, indexFirstErr)
-        let index = getPosition(strSpeak, ' ', 1)
+        let index = strSpeak.lastIndexOf(" ")
         return sentence.substring(index, sentence.length);
     }
 
