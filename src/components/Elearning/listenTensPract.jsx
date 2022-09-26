@@ -29,7 +29,6 @@ const ListenTensPract = () => {
     const inputAns = useRef(null)
 
     useEffect(() => {
-        // document.getElementById('inputTxt').value =`table, column, newValue, oldValue, date, system(if need), ip, UserAgent, clumnReference, operatorReference, valueReference. All tables/columns/actions that need to log are configurable.`
         document.getElementById('numbWord').value = 2
     }, []);
     useEffect(() => {
@@ -63,15 +62,25 @@ const ListenTensPract = () => {
     const changeSentence = () => {
         if(_.isEmpty(arrSentence)){
             onStart()
+            if(_.isEmpty(arrSentence)){
+                return;
+            }
         }
-        indexST = indexST + 1;
-        if (indexST >= arrSentence.length) {
-            indexST = 0;
-        }
+        indexST = getIndex(indexST);
         setLastAnsw(sentence)
         sentence = arrSentence[indexST].trim();
         speakAns();
     };
+
+    const getIndex = (indexST) =>{
+        indexST = indexST + 1;
+        if (indexST >= arrSentence.length) {
+            indexST = 0;
+        }
+        
+        return _.isEmpty(arrSentence[indexST]) ? getIndex(indexST): indexST
+    }
+
     const speakAns = () => {
         speakText(sentence)
     };
@@ -124,9 +133,6 @@ const ListenTensPract = () => {
             speakAns();
         }
       
-        if (e.nativeEvent.code === 'ControlRight') {
-            speakText(getNextSubAns());
-        }
         if (e.nativeEvent.code === 'End') {
             changeSentence();
         }
@@ -142,8 +148,15 @@ const ListenTensPract = () => {
         if (e.nativeEvent.code === 'ArrowDown') {
             speakText(lastAnsw);
         }
-        if (e.nativeEvent.code === 'ShiftRight' ) {
-            let numOfWord = document.getElementById('numbWord').value 
+        if (e.nativeEvent.code === 'ShiftRight') {
+            speakText(getNextSubAns());
+        }
+        if (e.nativeEvent.code === 'ControlRight' ) {
+            speakI();
+        }
+    }
+    const speakI =()=>{
+        let numOfWord = document.getElementById('numbWord').value 
             let nextStr = getNextSubAns()
             let index = getPosition(nextStr, ' ', Number(numOfWord))
             if(index>0){
@@ -151,7 +164,6 @@ const ListenTensPract = () => {
             }else{
                 speakText(nextStr);
             }
-        }
     }
     const getNextSubAns =()=>{
         let ansInput =  document.getElementById('answer').value
@@ -180,7 +192,7 @@ const ListenTensPract = () => {
         speak(utterance);
     }
     return (
-        <div className='container-left'>
+        <div className='container-left listen-prac'>
             <div id="control">
 
                 <textarea id='inputTxt' className='area-input' onKeyDown={e => handleKeyDownInput(e)}></textarea>
@@ -206,6 +218,13 @@ const ListenTensPract = () => {
                 </select>
                 <input id='numbWord' className='width-30'/>
                 <span> </span>
+                <div className="mobile">
+                    <button className='button-12 inline' onClick={() => onCheck()} >c</button>
+                    <span> </span>
+                    <button className='button-12 inline' onClick={() => speakI()} >ci</button>
+                    <span> </span>
+                    <button className='button-12 inline' onClick={() => speakText(getNextSubAns())} >ce</button>
+                </div>
                 <br />
                 <input className="width-220 range-color"
                     type="range"
@@ -219,6 +238,20 @@ const ListenTensPract = () => {
                     }}
                 />
                 <span className="rate-value">{rate}</span>
+               
+                <div className="tooltip">?
+                    <span className="tooltiptext">Enter :check
+                        <br />ShiftLeft: hint 1 letter
+                        <br />ControlLeft: correct 1 letter
+                        <br />Insert: speak all
+                        <br />ShiftRight: speak error word -{'>'} end
+                        <br />ControlRight: speak error word -{'>'} i
+                        <br />End: next question
+                        <br />Home: start
+                        <br />PageUp: hide txt input
+                        <br />PageDown: hide all
+                        <br />ArrowDown: speak last  </span>
+                </div>
                 <br />
             </div>
             <div className="">

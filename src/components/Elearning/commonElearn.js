@@ -27,7 +27,6 @@ export  const arrStrCheckToStr = (arrStrCheck) =>{
         }
     }
     strRes += "</span>"
-    console.log(strRes)
     return strRes
 }
 export const validateArrStrCheck = (inputAns, answ) =>{
