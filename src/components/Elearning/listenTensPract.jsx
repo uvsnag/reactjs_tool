@@ -7,7 +7,7 @@ import { useSpeechSynthesis } from "react-speech-kit";
 import { replaceArr, isEqualStr, getPosition } from "../../common/common.js";
 import {
     validateArrStrCheck, arrStrCheckToStr,
-    autoCorrectLetter, genHintStrAns, TYPE_WRONG
+    autoCorrectLetter, genHintStrAns, TYPE_WRONG, TYPE_CORRECT
 } from "../Elearning/commonElearn";
 import _ from 'lodash';
 
@@ -69,6 +69,7 @@ const ListenTensPract = () => {
         indexST = getIndex(indexST);
         setLastAnsw(sentence)
         sentence = arrSentence[indexST].trim();
+        sentence = sentence.replaceAll("  ", " ")
         speakAns();
     };
 
@@ -87,17 +88,35 @@ const ListenTensPract = () => {
     const onCheck = () => {
         let ans = document.getElementById('answer').value;
         if (isEqualStr(sentence, ans, true)) {
-            let arr = validateArrStrCheck(ans, sentence)
+            let arr = validateArrStrCheck(ans, sentence, 0)
             setAnswer(arrStrCheckToStr(arr))
             changeSentence()
             /* setErrorMs('correct!'); */
             document.getElementById('answer').value = "";
         } else {
-            let arr = validateArrStrCheck(ans, sentence)
+            let arr0 = validateArrStrCheck(ans, sentence, 0)
+            let arr1 = validateArrStrCheck(ans, sentence, 1)
+            let arr2 = validateArrStrCheck(ans, sentence, 2)
+            let arr = arr0
+           if(getNumberCorrect(arr)<getNumberCorrect(arr1)){
+              arr = arr1
+           }
+           if(getNumberCorrect(arr)<getNumberCorrect(arr2)){
+              arr = arr2
+           }
             setAnswer(arrStrCheckToStr(arr))
             /* setErrorMs('wrong!'); */
         }
+    }
 
+    const getNumberCorrect = (arr) => {
+        let number = 0
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].type === TYPE_CORRECT) {
+                number += 1
+            }
+        }
+        return number;
     }
     const handleKeyDownInput = (e) => {
         if (e.nativeEvent.code === 'PageUp') {
@@ -156,19 +175,20 @@ const ListenTensPract = () => {
         }
     }
     const speakI =()=>{
-        let numOfWord = document.getElementById('numbWord').value 
-            let nextStr = getNextSubAns()
-            let index = getPosition(nextStr, ' ', Number(numOfWord))
-            if(index>0){
-                speakText(nextStr.substring(0, index));
-            }else{
-                speakText(nextStr);
-            }
+        console.log('ds')
+        let numOfWord = document.getElementById('numbWord').value
+        let nextStr = getNextSubAns()
+        let index = getPosition(nextStr, ' ', Number(numOfWord))
+        if (index > 0) {
+            speakText(nextStr.substring(0, index));
+        } else {
+            speakText(nextStr);
+        }
     }
     const getNextSubAns =()=>{
         let ansInput =  document.getElementById('answer').value
         let indexFirstErr = 0;
-        let arrStrCheck = validateArrStrCheck(ansInput, sentence)
+        let arrStrCheck = validateArrStrCheck(ansInput, sentence, 0)
         for(let i=0; i< arrStrCheck.length; i++){
             if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
                 indexFirstErr = i

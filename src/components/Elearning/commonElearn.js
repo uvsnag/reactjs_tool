@@ -29,26 +29,44 @@ export  const arrStrCheckToStr = (arrStrCheck) =>{
     strRes += "</span>"
     return strRes
 }
-export const validateArrStrCheck = (inputAns, answ) =>{
+export const validateArrStrCheck = (inputAns, answ, iNum) =>{
+    let flagUseINum = false
     let arrStrCheck = []
     let arrAns = answ.split('')
     let arrInput = inputAns.split('')
 
-    for( let i=0; i<arrInput.length; i++){
+
+    let i = 0
+    let j = 0
+    while (i < (arrInput.length + iNum)) {
         let objChar ={
             index: i,
-            char:arrInput[i],
+            char:arrInput[j],
             type: ""
         }
-        if(isEqualStr(arrAns[i], arrInput[i], true)){
+        if(isEqualStr(arrAns[i], arrInput[j], true)){
             objChar.type =  TYPE_CORRECT
         }else{
-            objChar.type =  TYPE_WRONG
+            if(flagUseINum === false && iNum > 0){
+                for(let k = 0;k <iNum; k++){
+                    objChar.type =  TYPE_WRONG
+                    objChar.char ='_'
+                    arrStrCheck.push(objChar)
+                    i = i+ 1;
+                }
+                flagUseINum = true
+                continue;
+            }else{
+                objChar.type =  TYPE_WRONG
+            }
         }
-        if(arrInput[i]){
+        if(arrInput[j]){
             arrStrCheck.push(objChar)
         }
+        i++;
+        j++;
     }
+
     if(arrAns.length > arrInput.length){
         arrStrCheck.push({
             index: arrStrCheck.length,
@@ -59,9 +77,10 @@ export const validateArrStrCheck = (inputAns, answ) =>{
     return arrStrCheck;
 }
 
+
 export const genHintStrAns = (nameInput, answer) => {
     let inputAns = document.getElementById(nameInput).value;
-    let arrStrCheck = validateArrStrCheck(inputAns, answer)
+    let arrStrCheck = validateArrStrCheck(inputAns, answer, 0)
     for(let i=0; i< arrStrCheck.length; i++){
         if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
             let charCorrect = answer.substring(i, i+1)
@@ -74,7 +93,7 @@ export const genHintStrAns = (nameInput, answer) => {
 }
 export const autoCorrectLetter = (nameInput, answer) => {
     let inputAns = document.getElementById(nameInput).value;
-    let arrStrCheck = validateArrStrCheck(inputAns, answer)
+    let arrStrCheck = validateArrStrCheck(inputAns, answer, 0)
     for(let i=0; i< arrStrCheck.length; i++){
         if(_.isEqual(arrStrCheck[i].type, TYPE_WRONG)){
             inputAns = setCharAt(inputAns, i, answer.substring(i, i+1));

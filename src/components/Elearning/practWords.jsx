@@ -83,7 +83,7 @@ const PractWords = (props) => {
                     props.speakText(answer, true);
                 }
             } else {
-                let arr = validateArrStrCheck(ans, answer)
+                let arr = validateArrStrCheck(ans, answer, 0)
                 setShowAns(arrStrCheckToStr(arr))
                 /* setErrorMs('wrong!'); */
             }
