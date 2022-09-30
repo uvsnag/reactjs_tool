@@ -78,12 +78,12 @@ const ListenTensPract = () => {
             let arrIn = inputtxt.split('\n');
             for (let i = 0; i < arrIn.length; i++) {
                 if(!isTime(arrIn[i])){
-                    input += ` ${arrIn[i]}`;
+                    input += `${arrIn[i]} `;
                 }
                 
             }
         }
-        let arrReg = [',', '?', '(', ')', '!', '—', '-', '.', '”', '“', '\n',
+        let arrReg = ['[',']',',', '?', '(', ')', '!', '—', '-', '.', '”', '“', '\n',
         ';', '  ']
         input = replaceArr(input, arrReg, ' ')
         const NUMOFWORD = document.getElementById('numWordBreak').value
