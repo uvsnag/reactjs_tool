@@ -30,6 +30,7 @@ const ListenTensPract = () => {
 
     useEffect(() => {
         document.getElementById('numbWord').value = 2
+        document.getElementById('numWordBreak').value = 7
     }, []);
     useEffect(() => {
         voices.forEach((option, index) => {
@@ -59,6 +60,55 @@ const ListenTensPract = () => {
         document.getElementById(`inputTxt`).style.display = "none";
         inputAns.current.focus()
     };
+    const isInteger = num => /^-?[0-9]+$/.test(num+'');
+    const isTime =(str)=>{
+        str =str.trim()
+        let arr = str.split(':');
+        if(arr.length === 2 && isInteger(arr[0]) && isInteger(arr[0])){
+            return true
+        }
+        return false
+    }
+
+    const onStartCountW = () => {
+        const removeTime = true
+        let inputtxt = document.getElementById('inputTxt').value;
+        let input = ''
+        if(removeTime === true){
+            let arrIn = inputtxt.split('\n');
+            for (let i = 0; i < arrIn.length; i++) {
+                if(!isTime(arrIn[i])){
+                    input += ` ${arrIn[i]}`;
+                }
+                
+            }
+        }
+        let arrReg = [',', '?', '(', ')', '!', '—', '-', '.', '”', '“', '\n',
+        ';', '  ']
+        input = replaceArr(input, arrReg, ' ')
+        const NUMOFWORD = document.getElementById('numWordBreak').value
+        let input2 = ''
+        let count = 0
+        for (let j = 0; j < input.length; j++) {
+            if (input[j] === ' ') {
+                count++;
+                if (count >= Number(NUMOFWORD)) {
+                    input2 += '*'
+                    count = 0
+                    continue;
+                }
+            }
+            input2 += input[j]
+
+        }
+        arrSentence = input2.split('*')
+        console.log(arrSentence)
+        indexST = -1
+        setAnswer('')
+        changeSentence()
+        document.getElementById(`inputTxt`).style.display = "none";
+        inputAns.current.focus()
+    }
     const changeSentence = () => {
         if(_.isEmpty(arrSentence)){
             onStart()
@@ -220,6 +270,8 @@ const ListenTensPract = () => {
                 <button className='button-12 inline' id='hideBtn' onClick={() => onHideInput('inputTxt')} ><FaEyeSlash /></button>
                 <span> </span>
                 <button className='button-12 inline' id='Start' onClick={() => onStart()} >Start</button>
+                <button className='button-12 inline'  onClick={() => onStartCountW()} >St2</button>
+                <input id='numWordBreak' className='width-30'/>
                 <span> </span>
                 <select className='button-12 inline width-120 '
                     id="voice"

@@ -80,8 +80,8 @@ export const isEqualStr = (str1, str2, isCaseInte) => {
     replaceArr(str1, arr, "")
     replaceArr(str2, arr, "")
     if (isCaseInte === true) {
-        str1 = str1.toUpperCase();
-        str2 = str2.toUpperCase();
+        str1 = str1.trim().toUpperCase();
+        str2 = str2.trim().toUpperCase();
     }
     return _.isEqual(str1, str2);
 }
