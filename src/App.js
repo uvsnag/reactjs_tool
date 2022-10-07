@@ -13,6 +13,7 @@ function App() {
         <Link to="/listen">listenWordPrac</Link>
         <Link to="/youtube-sub">youtube-sub</Link>
         <Link to="/listenTens">listenPassagePrac</Link>
+        <Link to="/voiceToText">VoiceToText</Link>
       </div>
     </div>
   );

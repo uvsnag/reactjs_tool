@@ -10,6 +10,7 @@ import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import ListenPract from './components/Elearning/listenPract.jsx'
 import ListenTensPract from './components/Elearning/listenTensPract.jsx'
 import YoutubeSub from './components/YTSub/vdYtSub'
+import VoiceToText from './components/Elearning/voice-to-text'
 import RedirectUrl from './components/RedirectUrl'
 import reportWebVitals from './reportWebVitals';
 import { FaHome } from 'react-icons/fa';
@@ -30,6 +31,7 @@ ReactDOM.render(
          <Route path="/listen" element={<ListenPract/>} />
          <Route path="/listenTens" element={<ListenTensPract/>} />
          <Route path="/youtube-sub" element={<YoutubeSub/>} />
+         <Route path="/voiceToText" element={<VoiceToText/>} />
           
       </Routes>
     </BrowserRouter>
