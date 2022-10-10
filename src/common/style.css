@@ -287,3 +287,9 @@ html {
         display: none;
     }
 }
+
+.content-log{
+    width: auto;
+    height: 50px;
+    overflow-y: scroll;
+}
