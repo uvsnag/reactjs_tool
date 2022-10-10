@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 const SpeechRecogn = () => {
@@ -31,7 +31,7 @@ const SpeechRecogn = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
   const startListening = () => {
-    SpeechRecognition.startListening({ continuous: true });
+    SpeechRecognition.startListening({ continuous: true, language : 'en-US' });
   }
   const stopListening = () => {
     SpeechRecognition.stopListening();
