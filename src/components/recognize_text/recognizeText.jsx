@@ -62,7 +62,7 @@ const SpeechRecogn = () => {
         <input type="number" id='numClear' className='width-30' />
       </div>
       <div className='content-log' >
-        {transcript}
+        <div id = 'transcript-i'>{transcript}</div>
         <div ref={messagesEndRef} />
       </div>
       <button onClick={() => showHideContr()}>
