@@ -2,7 +2,13 @@ import React, { useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 const SpeechRecogn = () => {
-  const { transcript, resetTranscript } = useSpeechRecognition();
+  const { transcript
+    , resetTranscript
+    , listening
+    , browserSupportsSpeechRecognition
+    , isMicrophoneAvailable
+    , interimTranscript
+    ,finalTranscript } = useSpeechRecognition();
   const messagesEndRef = React.createRef()
 
   useEffect(() => {
@@ -10,6 +16,14 @@ const SpeechRecogn = () => {
       alert("Browser does not support speech to text");
     }
     document.getElementById(`numClear`).value = 0;
+    setInterval(() => {
+      console.log(transcript)
+      console.log('listening:'+ String (listening))
+      console.log('browserSupportsSpeechRecognition:'+ String (browserSupportsSpeechRecognition))
+      console.log('isMicrophoneAvailable:'+ String (isMicrophoneAvailable))
+      console.log('interimTranscript:'+ String (interimTranscript))
+      console.log('finalTranscript:'+ String (finalTranscript))
+    }, 3000);
   }, []);
   useEffect(() => {
     let num = Number(document.getElementById(`numClear`).value)
@@ -31,7 +45,7 @@ const SpeechRecogn = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
   const startListening = () => {
-    SpeechRecognition.startListening({ continuous: true/* , language : 'en-US' */ });
+    SpeechRecognition.startListening({ continuous: true , language : 'en-US' });
   }
   const stopListening = () => {
     SpeechRecognition.stopListening();
