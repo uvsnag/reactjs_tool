@@ -387,9 +387,11 @@ const NotifyAuto = () => {
                         <select className='button-34' name="sheet" id="slsheet" onChange={(e) => {
                             setSheet(e.target.value)
                         }}>
-                            <option value="Words1!A1:C100">Words1</option>
-                            <option value="Words2!A1:C100">Words2</option>
-                            <option value="Words3!A1:C100">Words3</option>
+                            <option value="Words1!A1:C500">Words1</option>
+                            <option value="Words2!A1:C500">Words2</option>
+                            <option value="Words3!A1:C500">Words3</option>
+                            <option value="temp1!A1:C500">temp1</option>
+                            <option value="temp2!A1:C500">temp2</option>
                             <option value="Sentence1!A1:C500">Sentence1</option>
                             <option value="Sentence2!A1:C500">Sentence2</option>
                             <option value="Sentence3!A1:C500">Sentence3</option>
