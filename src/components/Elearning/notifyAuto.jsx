@@ -381,7 +381,7 @@ const NotifyAuto = () => {
                 <div className='option-noti block' id='control'>
                     <div className='option-left'>
                         <textarea title='f' id='txtField'></textarea>
-                        <div> {speakStrEng}:  {speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div><br />
+                        <br />
                     </div>
                     <div className='option-right notify-right'>
                         <select className='button-34' name="sheet" id="slsheet" onChange={(e) => {
@@ -488,6 +488,7 @@ const NotifyAuto = () => {
                     isLoadQuestion={isLoadQuestion} 
                     getDataFromExcel = {getDataFromExcel}/>
             </div>
+            <div> {speakStrEng}:  {speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div>
             <div id='btnHideWhenPrac' onClick={() => onHideWhenPrac()} ><FaCircleNotch /></div>
         </div>
     );
