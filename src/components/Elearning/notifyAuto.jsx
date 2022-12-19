@@ -381,15 +381,17 @@ const NotifyAuto = () => {
                 <div className='option-noti block' id='control'>
                     <div className='option-left'>
                         <textarea title='f' id='txtField'></textarea>
-                        <div> {speakStrEng}:  {speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div><br />
+                        <br />
                     </div>
                     <div className='option-right notify-right'>
                         <select className='button-34' name="sheet" id="slsheet" onChange={(e) => {
                             setSheet(e.target.value)
                         }}>
-                            <option value="Words1!A1:C100">Words1</option>
-                            <option value="Words2!A1:C100">Words2</option>
-                            <option value="Words3!A1:C100">Words3</option>
+                            <option value="Words1!A1:C500">Words1</option>
+                            <option value="Words2!A1:C500">Words2</option>
+                            <option value="Words3!A1:C500">Words3</option>
+                            <option value="temp1!A1:C500">temp1</option>
+                            <option value="temp2!A1:C500">temp2</option>
                             <option value="Sentence1!A1:C500">Sentence1</option>
                             <option value="Sentence2!A1:C500">Sentence2</option>
                             <option value="Sentence3!A1:C500">Sentence3</option>
@@ -486,6 +488,7 @@ const NotifyAuto = () => {
                     isLoadQuestion={isLoadQuestion} 
                     getDataFromExcel = {getDataFromExcel}/>
             </div>
+            <div> {speakStrEng}:  {speakStrVie}{_.isEmpty(speakStrEng) ? <div></div> : <FaVolumeUp className='iconSound' onClick={() => speakText(speakStrEng, true)} />}</div>
             <div id='btnHideWhenPrac' onClick={() => onHideWhenPrac()} ><FaCircleNotch /></div>
         </div>
     );
