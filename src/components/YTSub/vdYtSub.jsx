@@ -77,6 +77,7 @@ const YoutubeSub = () => {
             onYouTubeIframeAPIReady();
         }
         document.getElementById(`cus-loop-control`).style.display = "none";
+        document.getElementById(`timemisus`).value = 2;
         mode = MODE_NOMAL;
         customLoopMode = LOOP_NONE;
         customLoopA = NOT_VALUE_TIME;
@@ -331,8 +332,28 @@ const YoutubeSub = () => {
             player.pauseVideo();
         }
         console.log(player);
-
     }
+    const onControlKey = (e) => {
+        console.log(e.nativeEvent.code)
+        if (e.key === 'ArrowLeft') {
+            let currTime = player.getCurrentTime();
+            let timemisus = document.getElementById('timemisus').value;
+            console.log(currTime)
+            console.log(timemisus)
+            player.seekTo(Number(currTime - Number(timemisus)), true);
+        }
+        if (e.key === 'ArrowRight') {
+            let currTime = player.getCurrentTime();
+            let timemisus = document.getElementById('timemisus').value;
+            console.log(currTime)
+            console.log(timemisus)
+            player.seekTo(Number(currTime + Number(timemisus)), true);
+        }
+        if (e.key === 'ArrowDown') {
+            onStartStop(e);
+        }
+    }
+
     const onClearCusLoop = () => {
         customLoopA = NOT_VALUE_TIME;
         customLoopB = NOT_VALUE_TIME;
@@ -443,6 +464,8 @@ const YoutubeSub = () => {
                     <input type='submit' value="Resize" onClick={() => onChangeSize(SIZE_CUSTOM)} />
                 </div>
             </div>
+                <input className="width-30"  placeholder="control-form"  onKeyDown={e => onControlKey(e)}/>
+                <input className="width-30" id="timemisus" />
                 <input type='submit' value="|>" onClick={() => onStartStop()} />
                 <input type='submit' value="+/-" onClick={() => onShowHideVideo()} />
             <div id="hide2">
