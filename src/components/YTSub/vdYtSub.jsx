@@ -128,14 +128,22 @@ const YoutubeSub = () => {
 
                 let min = Math.floor(player.getCurrentTime() / 60);
                 let sec = Math.floor((player.getCurrentTime() % 60));
+                let hour = 0;
+                if(min>60){
+                    hour = Math.floor(min/60);
+                    min = Math.floor(min%60);
+                }
                 let mmss = sec > 9 ? `${min}:${sec}` : `${min}:0${sec}`;
+                if(hour>0){
+                    mmss = `${hour}:${mmss}`
+                }
+
                 console.log(mmss);
                 currentTime = currTime;
                 console.log(currentTime);
                 let currentSubEle = document.getElementById(`sub-item${mmss}`);
                 let offsetOgr = document.getElementById(`sub-item0:00`);
                 if (currentSubEle && offsetOgr) {
-
                     currentSubEle.style.backgroundColor = COLOR_CURRENT_BACKGROUND;
                     let MINUS_TOP = _.isEqual(mode, MODE_FOCUS_SUB) ? -10 :
                         document.getElementById(`sub-control`).offsetHeight / 3;
@@ -353,6 +361,18 @@ const YoutubeSub = () => {
             onStartStop(e);
         }
     }
+    const onControlKeyListen = (e) => {
+        console.log(e.nativeEvent.code)
+        if (e.key === 'ArrowLeft') {
+            onPrevLine()
+        }
+        if (e.key === 'ArrowRight') {
+            onNextLine()
+        }
+        if (e.key === 'ArrowDown') {
+            onStartStop(e);
+        }
+    }
 
     const onClearCusLoop = () => {
         customLoopA = NOT_VALUE_TIME;
@@ -494,6 +514,7 @@ const YoutubeSub = () => {
 
                     <input type='submit' value="<<" onClick={() => onPrevLine()} />
                     <input type='submit' value=">>" onClick={() => onNextLine()} />
+                    <input className="width-30"  placeholder="control-form"  onKeyDown={e => onControlKeyListen(e)}/>
                     <div id='sub-control' >
                         {arrSub.map((item, index) => <LineSub key={`${item.time}${item.value}`}
                             time={item.time}
