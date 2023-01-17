@@ -20,6 +20,8 @@ let customLoopMode = null;
 let customLoopA = null;
 let customLoopB = null;
 let intervalCusLoop;
+
+var arrTime = [];
 console.log("int..ed variables");
 
 const YoutubeSub = () => {
@@ -143,6 +145,25 @@ const YoutubeSub = () => {
                 console.log(currentTime);
                 let currentSubEle = document.getElementById(`sub-item${mmss}`);
                 let offsetOgr = document.getElementById(`sub-item0:00`);
+                if(!currentSubEle){
+                    
+                    // let time = ''
+                    // for(let i=0; i<arrTime.length; i++){
+                    //     let itemS = arrTime[i];
+                    //     if(itemS.length === mmss.length && itemS.substring(0, itemS.length-2) === itemS.substring(0, itemS.length-2)){
+                    //     if(Number(tmpArr[tmpArr.length-1]<Number(arrmmss[tmpArr.length-1]))){
+                    //         time = itemS;
+                    //     }else{
+                    //         if(time && time.length>0){
+                    //             // currentSubEle = document.getElementById(`sub-item${time}`);
+                    //             break;
+                    //             console.log(time)
+                    //             }
+                    //        }
+                    //     }
+
+                    // }
+                }
                 if (currentSubEle && offsetOgr) {
                     currentSubEle.style.backgroundColor = COLOR_CURRENT_BACKGROUND;
                     let MINUS_TOP = _.isEqual(mode, MODE_FOCUS_SUB) ? -10 :
@@ -177,10 +198,12 @@ const YoutubeSub = () => {
         let count = 1;
         let tempTime = '';
         let arrTemp = [];
+        arrTime = []
         lineSubArr.forEach((line, index) => {
             let lineSub = line.trim();
             if (count === 1) {
                 tempTime = lineSub;
+                arrTime.push(tempTime);
             }
             if (count === 2) {
                 arrTemp.push(new Sub(tempTime, lineSub));
@@ -189,6 +212,7 @@ const YoutubeSub = () => {
             count++;
 
         });
+        
         setArrSub(arrTemp);
         if (!_.isEmpty(arrTemp)) {
             document.getElementById('load-sub').style.display = "none";
@@ -360,6 +384,10 @@ const YoutubeSub = () => {
         if (e.key === 'ArrowDown') {
             onStartStop(e);
         }
+        if (e.key === 'ArrowUp') {
+            let timemisus = document.getElementById('timemisus').value;
+            document.getElementById('timemisus').value = (timemisus == "2")?1:2;
+        }
     }
     const onControlKeyListen = (e) => {
         console.log(e.nativeEvent.code)
@@ -438,7 +466,7 @@ const YoutubeSub = () => {
                 document.getElementById('vd-control').style.display = "none";
                 break;
             case MODE_FOCUS_SUB2:
-                document.getElementById(`sub-control`).style.height = '70px';
+                document.getElementById(`sub-control`).style.height = '100px';
                 document.getElementById('vd-control').style.display = "none";
                 break;
             default:
