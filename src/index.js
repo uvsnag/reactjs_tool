@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import SqlProcess from './components/gen_tools_it/sqlProcess'
 import JsonProcess from './components/jsonProcess.jsx'
+import SqlCompile from './components/gen_tools_it/sqlCompile'
 import ReplaceProcess from './components/replaceProcess.jsx'
 import MediaProcess from './components/mediaProcess.jsx'
 import NotifyAuto from './components/Elearning/notifyAuto.jsx'
@@ -32,6 +33,7 @@ ReactDOM.render(
          <Route path="/listenTens" element={<ListenTensPract/>} />
          <Route path="/youtube-sub" element={<YoutubeSub/>} />
          <Route path="/voiceToText" element={<SpeechRecogn/>} />
+         <Route path="/sqlcompile" element={<SqlCompile/>} />
           
       </Routes>
     </BrowserRouter>

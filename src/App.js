@@ -13,7 +13,8 @@ function App() {
         <Link to="/listen">listenWordPrac</Link>
         <Link to="/youtube-sub">youtube-sub</Link>
         <Link to="/listenTens">listenPassagePrac</Link>
-        <Link to="/voiceToText">VoiceToText</Link>
+        <Link to="/voiceToText">VoiceToText</Link><br/>
+        <Link to="/sqlcompile">sqlcompile</Link>
       </div>
     </div>
   );
