@@ -5,7 +5,7 @@ import { checkType, replaceArr, randomDate, formatDate, checkIncludesArr } from 
 import _ from 'lodash';
 
 const SqlCompile = () => {
-    // const [result, setResult] = useState('');
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         // document.getElementById('txtSql').textContent = `2020-03-03 09:41:27.057 DEBUG 10495 --- [io-50006-exec-1] c.f.t.d.m.M.countByExample               : ==>  Preparing: SELECT count(*) FROM MessageRecivers WHERE ((ReciverId = ? and ReadStats = ? and ReciverMessageFolder <> ?)) 
@@ -14,25 +14,36 @@ const SqlCompile = () => {
     }, []);
 
     const extractSqlQuery = (inputLog) => {
+        setMessage('');
+        inputLog = document.getElementById('txtSql').value.trim();
+        const arrStatement = inputLog.split('\n');
+        if(!arrStatement || arrStatement.length != 2){
+            setMessage('invalid statement');
+            return;
+        }
 
-        inputLog = document.getElementById('txtSql').value;
+        let sqlStatement = arrStatement[0];
+        let paramStatement = arrStatement[1];
 
-        const startIndex = inputLog.indexOf("Preparing: ") + "Preparing: ".length;
-        const sqlQuery = inputLog.substring(startIndex, inputLog.length);
+        const SPLIT_SQL_STATEMENT = 'Preparing: ';
+        const SPLIT_PARAM_STATEMENT = 'Parameters: ';
 
-        const paramLog = document.getElementById('txtparam').value.trim();
-        let parameters = extractArguments(paramLog.trim());
-        console.log(sqlQuery);
-        console.log(paramLog);
-        console.log(parameters);
 
-        const replacedQuery = sqlQuery.split("?").map((_, index) => {
+         sqlStatement = getStatementBaseOnSplitMark(sqlStatement, SPLIT_SQL_STATEMENT);
+         paramStatement = getStatementBaseOnSplitMark(paramStatement, SPLIT_PARAM_STATEMENT);
+
+        let parametersArr = extractArguments(paramStatement);
+        console.log(sqlStatement);
+        console.log(paramStatement);
+        console.log(parametersArr);
+
+        const replacedQuery = sqlStatement.split("?").map((_, index) => {
             if (index === 0) return _;
-            return `'${parameters[index - 1]}'` + _;
+            return `'${parametersArr[index - 1]}'` + _;
         }).join("");
         console.log(replacedQuery)
         document.getElementById('txtresult').textContent = replacedQuery;
-        // return replacedQuery;
+        onCoppyOutput();
     }
 
     const extractArguments = (inputLog) => {
@@ -47,16 +58,24 @@ const SqlCompile = () => {
 
     }
 
+    const getStatementBaseOnSplitMark = (statement, splitMark) =>{
+        const startIndex = statement.indexOf(splitMark) + splitMark.length;
+        return statement.substring(startIndex, statement.length).trim();
+    }
+    const onCoppyOutput = () =>{
+        navigator.clipboard.writeText(document.getElementById('txtresult').value);
+    };
 
 
     return (
         <div>
             <div className="sql-body">
+                <div class='message-sql-compile'>{message}</div>
                 <textarea class='area-sql' id='txtSql'></textarea><br />
-                <textarea class='area-sql' id='txtparam'></textarea><br />
+                <input type='submit' value = 'Submit' onClick={() => extractSqlQuery()} />
+                {/* <input type='submit' value="Copy" onClick={() => onCoppyOutput()}/> */}
                 <textarea class='area-sql' id='txtresult'></textarea>
             </div>
-            <input type='submit' onClick={() => extractSqlQuery()} />
         </div>
     );
 }
