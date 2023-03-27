@@ -4,6 +4,7 @@ import '../../common/style.css';
 import { checkType, replaceArr, randomDate, formatDate, checkIncludesArr } from "../../common/common.js";
 import _ from 'lodash';
 
+const ERROR = 'ERROR';
 const SqlCompile = () => {
     const [message, setMessage] = useState('');
 
@@ -33,6 +34,9 @@ const SqlCompile = () => {
          paramStatement = getStatementBaseOnSplitMark(paramStatement, SPLIT_PARAM_STATEMENT);
 
         let parametersArr = extractArguments(paramStatement);
+        if(ERROR == parametersArr){
+            return;
+        }
         console.log(sqlStatement);
         console.log(paramStatement);
         console.log(parametersArr);
@@ -47,11 +51,19 @@ const SqlCompile = () => {
     }
 
     const extractArguments = (inputLog) => {
-        const startIndex = inputLog.indexOf("Parameters: ") + "Parameters: ".length;
-        const str = inputLog.substring(startIndex, inputLog.length);
+        let arrStrReplace = ["(String)"]
 
-        const values = str.split(',').map((val) => val.trim().split(/\((.*?)\)/)[0]);
-        let res = values.map((val) => isNaN(val) ? val : Number(val));
+        // const values = inputLog.split(',').map((val) => val.trim().split(/\((.*?)\)/)[0]);
+        // let res = values.map((val) => isNaN(val) ? val : Number(val));
+
+        let res = inputLog.split(',').map((val) =>{
+            if (!checkIncludesArr(val, arrStrReplace, true)) {
+                setMessage('type data is not defined:' + val);
+                return ERROR;
+            }
+
+            return replaceArr(val.trim(), arrStrReplace, "");
+        });
         console.log(res)
 
         return res;
