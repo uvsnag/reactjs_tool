@@ -19,7 +19,7 @@ const SqlCompile = () => {
         inputLog = document.getElementById('txtSql').value.trim();
         const arrStatement = inputLog.split('\n');
         if(!arrStatement || arrStatement.length != 2){
-            setMessage('invalid statement');
+            showMessage('Invalid statement');
             return;
         }
 
@@ -33,6 +33,9 @@ const SqlCompile = () => {
          sqlStatement = getStatementBaseOnSplitMark(sqlStatement, SPLIT_SQL_STATEMENT);
          paramStatement = getStatementBaseOnSplitMark(paramStatement, SPLIT_PARAM_STATEMENT);
 
+         if(paramStatement[paramStatement.length-1] != ')'){
+            showMessage('Warning: End of statement is not ")"');
+         }
         let parametersArr = extractArguments(paramStatement);
         if(ERROR == parametersArr){
             return;
@@ -40,7 +43,6 @@ const SqlCompile = () => {
         console.log(sqlStatement);
         console.log(paramStatement);
         console.log(parametersArr);
-
         const replacedQuery = sqlStatement.split("?").map((_, index) => {
             if (index === 0) return _;
             return `'${parametersArr[index - 1]}'` + _;
@@ -52,19 +54,29 @@ const SqlCompile = () => {
 
     const extractArguments = (inputLog) => {
         let arrStrReplace = ["(String)"]
+        let cusType = document.getElementById('cus-type').value.trim();
+        if (!_.isEmpty(cusType)){
+            let arrExtType = cusType.split(',')
+            for (let tp of arrExtType){
+                arrStrReplace.push(`(${tp})`)
+            }
+            console.log(arrStrReplace)
+        }
 
         // const values = inputLog.split(',').map((val) => val.trim().split(/\((.*?)\)/)[0]);
         // let res = values.map((val) => isNaN(val) ? val : Number(val));
 
-        let res = inputLog.split(',').map((val) =>{
+        let res = inputLog.split('), ').map((val) =>{
+            if (val[val.length - 1] != ')') {
+                val = val + ')';
+            }
             if (!checkIncludesArr(val, arrStrReplace, true)) {
-                setMessage('type data is not defined:' + val);
+                showMessage('Data type is not defined:' + val);
                 return ERROR;
             }
 
             return replaceArr(val.trim(), arrStrReplace, "");
         });
-        console.log(res)
 
         return res;
 
@@ -77,14 +89,19 @@ const SqlCompile = () => {
     const onCoppyOutput = () =>{
         navigator.clipboard.writeText(document.getElementById('txtresult').value);
     };
-
+    const showMessage = (mes)=>{
+        setMessage(mes)
+        alert(mes);
+    }
 
     return (
         <div>
             <div className="sql-body">
+                <input type = 'text' class='' id='cus-type'></input>
+                <a data-toggle="tooltip" title="add more type of param (format input ex: Int,Long) - CODE WILL NOT REMOVE THE SPACE">?</a>
                 <div class='message-sql-compile'>{message}</div>
                 <textarea class='area-sql' id='txtSql'></textarea><br />
-                <input type='submit' value = 'Submit' onClick={() => extractSqlQuery()} />
+                <input type='submit' value = 'Gen' onClick={() => extractSqlQuery()} />
                 {/* <input type='submit' value="Copy" onClick={() => onCoppyOutput()}/> */}
                 <textarea class='area-sql' id='txtresult'></textarea>
             </div>
