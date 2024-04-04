@@ -21,8 +21,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-youtube": "^9.0.2",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.0.1",
-    "youtube-subtitles-downloader": "^1.0.1"
+    "web-vitals": "^1.0.1"
   },
   "scripts": {
     "predeploy": "npm run build",

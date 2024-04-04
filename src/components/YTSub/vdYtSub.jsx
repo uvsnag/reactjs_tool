@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import './styleYoutSub.css';
 import _ from 'lodash';
 import { Sub } from './subtitle.jsx'
-// import YTSubtitles from "youtube-subtitles-downloader";
-// import YouTube from 'react-youtube';
 
 let player;
 let interval;

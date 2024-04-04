@@ -1,3 +1,27 @@
+node
+v14.21.3
+npm
+6.14.18
+# start src
+npm --version
+npm install --legacy-peer-deps  
+npm start
+
+**npm install -g yarn ()
+
+
+*lỗi 'react-scripts' is not recognized as an internal or external command,
+operable program or batch file.
+
+=> cài 'react-scripts' bằng global : npm i -g react-scripts
+
+
+báo lỗi ở lib nào thì xóa khai báo trong file package.json rồi install lại sau đó cài lại bằng tay
+
+============ clean cache=========
+npm cache clean --force
+
+
 
 # deploy.
 

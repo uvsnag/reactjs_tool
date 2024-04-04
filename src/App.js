@@ -2,21 +2,23 @@ import { Link } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <div>
-        <Link to="/sql">sql</Link>
-        <Link to="/json">json</Link>
-        <Link to="/replace">replace</Link>
-        <Link to="/tip_management">tip-management</Link>
-        <Link to="/media">media</Link><br/>
-        <Link to="/notify">notify</Link>
-        <Link to="/listen">listenWordPrac</Link>
-        <Link to="/youtube-sub">youtube-sub</Link>
-        <Link to="/listenTens">listenPassagePrac</Link>
-        <Link to="/voiceToText">VoiceToText</Link><br/>
-        <Link to="/sqlcompile">sqlcompile</Link>
-      </div>
+
+      <div className="App">
+        <ul className = 'mst-menu'>
+        <li className = 'mst-menu-li'><Link to="/sqlcompile">sqlcompile</Link></li>
+        <li className = 'mst-menu-li'><Link to="/sql">sql</Link></li>
+        <li className = 'mst-menu-li'><Link to="/json">json</Link></li>
+        <li className = 'mst-menu-li'><Link to="/replace">replace</Link></li>
+        <li className = 'mst-menu-li'><Link to="/tip_management">tip-management</Link></li>
+        <li className = 'mst-menu-li'><Link to="/media">media</Link></li>
+        <li className = 'mst-menu-li'><Link to="/notify">notify</Link></li>
+        <li className = 'mst-menu-li'><Link to="/listen">listenWordPrac</Link></li>
+        <li className = 'mst-menu-li'><Link to="/youtube-sub">youtube-sub</Link></li>
+        <li className = 'mst-menu-li'><Link to="/listenTens">listenPassagePrac</Link></li>
+        <li className = 'mst-menu-li'><Link to="/voiceToText">VoiceToText</Link></li>
+        </ul>
     </div>
+    
   );
 }
 
