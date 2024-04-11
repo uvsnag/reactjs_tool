@@ -5,6 +5,7 @@ import { checkType, replaceArr, randomDate, formatDate, checkIncludesArr } from 
 import _ from 'lodash';
 
 const ERROR = 'ERROR';
+const INT_CHAR = '@i@';
 const SqlCompile = () => {
     const [message, setMessage] = useState('');
 
@@ -45,7 +46,8 @@ const SqlCompile = () => {
         console.log(parametersArr);
         const replacedQuery = sqlStatement.split("?").map((_, index) => {
             if (index === 0) return _;
-            return `'${parametersArr[index - 1]}'` + _;
+            let str = parametersArr[index - 1];
+            return (str.includes(INT_CHAR)?`${str.replaceAll(INT_CHAR, '')}`:`'${str}'`) + _;
         }).join("");
         console.log(replacedQuery)
         document.getElementById('txtresult').textContent = replacedQuery;
@@ -54,6 +56,7 @@ const SqlCompile = () => {
 
     const extractArguments = (inputLog) => {
         let arrStrReplace = ["(String)"]
+        let arrStrReplaceNumber = ["(Double)","(Integer)"]
         let cusType = document.getElementById('cus-type').value.trim();
         if (!_.isEmpty(cusType)){
             let arrExtType = cusType.split(',')
@@ -70,12 +73,12 @@ const SqlCompile = () => {
             if (val[val.length - 1] != ')') {
                 val = val + ')';
             }
-            if (!checkIncludesArr(val, arrStrReplace, true)) {
+            if (!checkIncludesArr(val, arrStrReplace, true) && !checkIncludesArr(val, arrStrReplaceNumber, true)) {
                 showMessage('Data type is not defined:' + val);
                 return ERROR;
             }
-
-            return replaceArr(val.trim(), arrStrReplace, "");
+            let resTemp = replaceArr(val.trim(), arrStrReplace, "");
+            return replaceArr(resTemp, arrStrReplaceNumber, INT_CHAR);
         });
 
         return res;
