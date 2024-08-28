@@ -11,6 +11,7 @@ import NotifyAuto from './components/Elearning/notifyAuto.jsx'
 import ListenPract from './components/Elearning/listenPract.jsx'
 import ListenTensPract from './components/Elearning/listenTensPract.jsx'
 import YoutubeSub from './components/YTSub/vdYtSub'
+import ImageGridGenerator from './components/yout_tools/ImageGridGenerator.jsx'
 import SpeechRecogn from './components/recognize_text/recognizeText'
 import RedirectUrl from './components/RedirectUrl'
 import reportWebVitals from './reportWebVitals';
@@ -34,6 +35,7 @@ ReactDOM.render(
          <Route path="/youtube-sub" element={<YoutubeSub/>} />
          <Route path="/voiceToText" element={<SpeechRecogn/>} />
          <Route path="/sqlcompile" element={<SqlCompile/>} />
+         <Route path="/ImageGridGenerator" element={<ImageGridGenerator/>} />
           
       </Routes>
     </BrowserRouter>
