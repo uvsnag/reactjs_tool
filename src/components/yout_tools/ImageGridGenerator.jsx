@@ -10,7 +10,10 @@ const ImageGridGenerator = () => {
     const [image2, setImage2] = useState(null);
     const [gridImages, setGridImages] = useState([]);
     const handleCangeCols = (e) => {
-        setCols(URL.createObjectURL(e.target.files[0]));
+        setCols(e.target.value);
+    };
+    const handleSetRows = (e) => {
+        setRows(e.target.value);
     };
 
     const handleImage1Upload = (e) => {
@@ -36,8 +39,8 @@ const ImageGridGenerator = () => {
             {/* <h1>Image Grid Generator</h1> */}
             <div>
 
-               <div>cols</div> <input type="number" value = {cols} onChange={handleImage1Upload} /><br/>
-               <div>rows</div><input type="number" value = {rows}  onChange={handleImage1Upload} /><br/>
+               <div>cols</div> <input type="number" value = {cols} onChange={handleCangeCols} /><br/>
+               <div>rows</div><input type="number" value = {rows}  onChange={handleSetRows} /><br/>
                 <input type="file" accept="image/*" onChange={handleImage1Upload} /><br/>
                 <input type="file" accept="image/*" onChange={handleImage2Upload} />
             </div>
