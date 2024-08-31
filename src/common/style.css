@@ -327,3 +327,8 @@ li.mst-menu-li a:hover {
 .message-sql-compile{
     color: red;
 }
+
+img.flip  {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+  }
