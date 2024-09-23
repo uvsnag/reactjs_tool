@@ -17,6 +17,7 @@ function App() {
         <li className = 'mst-menu-li'><Link to="/listenTens">listenPassagePrac</Link></li>
         <li className = 'mst-menu-li'><Link to="/voiceToText">VoiceToText</Link></li>
         <li className = 'mst-menu-li'><Link to="/ImageGridGenerator">ImageGridGenerator</Link></li>
+        <li className = 'mst-menu-li'><Link to="/ScreenCapture">ScreenCaptureToImgageYT</Link></li>
         </ul>
     </div>
     

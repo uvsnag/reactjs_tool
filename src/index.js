@@ -12,6 +12,7 @@ import ListenPract from './components/Elearning/listenPract.jsx'
 import ListenTensPract from './components/Elearning/listenTensPract.jsx'
 import YoutubeSub from './components/YTSub/vdYtSub'
 import ImageGridGenerator from './components/yout_tools/ImageGridGenerator.jsx'
+import ScreenCapture from './components/yout_tools/ScreenCapture.jsx'
 import SpeechRecogn from './components/recognize_text/recognizeText'
 import RedirectUrl from './components/RedirectUrl'
 import reportWebVitals from './reportWebVitals';
@@ -36,6 +37,7 @@ ReactDOM.render(
          <Route path="/voiceToText" element={<SpeechRecogn/>} />
          <Route path="/sqlcompile" element={<SqlCompile/>} />
          <Route path="/ImageGridGenerator" element={<ImageGridGenerator/>} />
+         <Route path="/ScreenCapture" element={<ScreenCapture/>} />
           
       </Routes>
     </BrowserRouter>
